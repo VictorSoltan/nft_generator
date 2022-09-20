@@ -1,24 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+
+import NftView from './components/nft_view'
+import Menu from './components/menu'
+
+import colors from './assets/colors.json'
 
 function App() {
+
+  let [svgs, setSvgs] = React.useState([]),
+  [traits, setTraits] = React.useState([
+    {folderName: '', options: [], selectedOption: '', order: 0, visible: true, locked: false }
+  ]),
+  [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors).length)),
+  [linkElems, setLinkElems] = React.useState <any> (localStorage.getItem("elemLinks") ? JSON.parse(localStorage.getItem("elemLinks")!) : [])
+
+  React.useEffect(() => {
+    console.log(linkElems)
+  }, [linkElems])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NftView svgs={svgs} setSvgs={setSvgs} randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} colors={colors} traits={traits} setTraits={setTraits} linkElems={linkElems} />
+      <Menu setSvgs={setSvgs} svgs={svgs} randomStylePresset={randomStylePresset} traits={traits} setTraits={setTraits} linkElems={linkElems} setLinkElems={setLinkElems} />
     </div>
   );
 }

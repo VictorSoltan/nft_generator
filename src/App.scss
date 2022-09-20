@@ -1,0 +1,154 @@
+.App {
+  justify-content: space-between;
+  margin: 4% auto;
+  width: 50%;
+  min-width: 1024px;
+  .nft_preview{
+    flex-direction: column;
+    width: 36%;
+    .nft_name{
+      margin-bottom: 30px;
+      align-items: center;
+      height: 30px;
+      z-index: 9999;
+      img{
+        width: 28px;
+        margin-right: 6px;
+        cursor: pointer;
+      }
+      input{
+        background: #D9D9D9;
+        border: none;
+        padding: 5px;
+
+        font-family: 'Inter', sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 15px;
+        width: 100px;        
+      }
+    }
+    .nft_generated{
+      svg{
+        width: auto;
+        height: 340px;
+        margin: -80px -40px 0px;
+      }
+      div{
+        flex-direction: column;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-left: 10px;
+        img{
+          width: 72px;
+          cursor: pointer;
+        }
+      }
+    }
+    .favorites{
+      flex-direction: column;
+      div{
+        svg{
+          width: auto;
+          height: 340px;
+          margin: -80px -20px 0px;
+        }
+        img{
+          width: 80px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .generator_menu{
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 50%;
+    span{
+      margin-bottom: 17px;
+      .points{
+        flex-wrap: wrap;
+        width: 140px;
+        button{
+          border: none;
+          background: none;
+          margin: 0;
+          width: 35.1px;
+          height: 35.1px;
+          img{
+            width: 30px;
+            cursor: pointer;
+          }
+        }
+      }
+      .direction{
+        flex-direction: column;
+        justify-content: space-between;
+        width: 80%;
+        label{
+          display: flex;
+          align-items: center;
+          img{
+            width: 30px;
+            margin-right: 6px;
+            cursor: pointer;
+          }
+        }
+        select{
+          margin-top: 0px;
+          background: #D9D9D9;
+          border: none;
+          padding: 5px;
+          width: 100%; 
+
+          font-family: 'Inter', sans-serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 15px;
+          margin-bottom: 4px;
+        }
+      }
+    }
+    .plus_trait{
+      margin-top: 5px;
+      width: 110px;
+      justify-content: flex-end;
+      img{
+        cursor: pointer;
+        width: 60px;
+      }
+    }
+  }
+}
+
+div, span{
+  display: flex;
+}
+
+  // #hair {fill: #705ad7;}
+  // #nose {fill: #2db3a9;}
+  // #nose-D {fill: #431f59;} 
+  // #nose-L {fill: #7cc4c5;}  
+  // #earskin {fill: #f1d0e6;}
+  // #texture {fill: #5a2ae7;}
+  // #blacks {fill: #523259;}
+  // #whites {fill: #ffffff;}
+  // #nails {fill: #431f59;}
+  // #skin {fill: #856dec;}
+  // #skin-D {fill: #705ad7;}
+  // #skin-L {fill: #9b7fff;}
+  // #skin2 {fill: #c8e7c2;}
+  // #skin2-D {fill: #a0d9c2;}
+  // #skin2-L {fill: #e8fbe2;}
+  // #bone {fill: #523259;}
+  // #bone-D {fill: #431f59;}
+  // #bone-L {fill: #643c64;}
+  // #eye {fill: #dfeee8;}
+  // #eye-D {fill: #b5c9c0;}
+  // #eye-L {fill: #f1f2f2;}
+  // #pupil {fill: #ab281b;}
+  // #pupil-D {fill: #6e0500;}
+  // #pupil-L {fill: #f2a358 ;}
