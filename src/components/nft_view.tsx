@@ -69,11 +69,9 @@ export default function NftView({randomStylePresset, setRandomStylePresset, lock
                 console.log(res.data)
                 console.log(traitName)
                 
-                if(traits[x].locked) {
-                    newSvgs.push({index: x, svg: traits[x].svg, visible: traits[x].visible, locked: true})
-                }else{
+                if(!traits[x].locked) {
                     newTrait[x].selectedOption = traitName
-                    newSvgs.push({index: x, svg: res.data, visible: traits[x].visible, locked: false})
+                    newTrait[x].svg = res.data
                 }
             })
         }
