@@ -61,7 +61,7 @@ export default function NftView({randomStylePresset, setRandomStylePresset, lock
 
         for(let x=0; x<traits.length; x++){
             let traitName = random('random', x,  traits[x].folderName)
-            await axios.post('http://localhost:8000/get_trait', {
+            await axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
                 file: traitName,
                 trait: traits[x].folderName
             })
@@ -82,7 +82,7 @@ export default function NftView({randomStylePresset, setRandomStylePresset, lock
             for(let q=0; q<traits.length; q++){
                 if(linkElems[x].folderSecond===traits[q].folderName && linkElems[x].selectSecond===traits[q].selectedOption){
                     console.log('second')
-                    await axios.post('http://localhost:8000/get_trait', {
+                    await axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
                         file: linkElems[x].selectedFirst,
                         trait: linkElems[x].folderFirst
                     })

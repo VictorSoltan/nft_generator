@@ -66,7 +66,7 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
 
 
     React.useEffect(() => {
-        axios.get('http://localhost:8000/get_folders')
+        axios.get('https://limitless-island-76560.herokuapp.com/get_folders')
             .then((res) => {
                 console.log(res.data)
                 let newArr = [...traits]
@@ -98,7 +98,7 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
 
     const getTraits = (index: number, e: string) => {
         console.log(e)
-        axios.post('http://localhost:8000/get_traits', {
+        axios.post('https://limitless-island-76560.herokuapp.com/get_traits', {
             trait: e
         })
         .then((res) => {
@@ -112,7 +112,7 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
 
     const getTrait = (index: number, e: string) => {
         console.log(e)
-        axios.post('http://localhost:8000/get_trait', {
+        axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
             file: e,
             trait: traits[index].folderName
         })
