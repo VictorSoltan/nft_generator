@@ -16,15 +16,16 @@ import axios from 'axios'
 import colors from '../assets/colors.json'
 import { unwatchFile } from 'fs'
 
-export default function Menu({setSvgs, svgs, randomStylePresset, traits, setTraits, linkElems, setLinkElems} : 
-    {setSvgs: any; svgs: any; randomStylePresset: number; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
+export default function Menu({randomStylePresset, setRandomStylePresset, lockColor, setLockColor, traits, setTraits, linkElems, setLinkElems} : 
+    {randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean; setLockColor: any; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
 
 
     React.useEffect(() => {
         let obj = Object.entries(colors)[randomStylePresset][1]
-        // console.log(obj)
+
+        console.log( Object.entries(colors).length)
             
-        console.log(document.querySelector(`.svgOuter`)?.classList[1])
+        // console.log(document.querySelector(`.svgOuter`)?.classList[1])
 
         Object.entries(obj).map(item => {
             // console.log(item)
@@ -55,12 +56,17 @@ export default function Menu({setSvgs, svgs, randomStylePresset, traits, setTrai
         { img: Down, name: 'Down', func: changeOrder }
     ]
 
+    const color_menu_points = [
+        { img: Lock, name: 'Lock', func: lockColorFunc }, 
+        { img: Dice, name: 'Dice', func: randomColor }, 
+    ]
+
     let [folders, setFolders] = React.useState([]),
     pair = React.useRef<any>({avialiable: false, id: linkElems.length})
 
 
     React.useEffect(() => {
-        axios.get('https://limitless-island-76560.herokuapp.com/get_folders')
+        axios.get('http://localhost:8000/get_folders')
             .then((res) => {
                 console.log(res.data)
                 let newArr = [...traits]
@@ -74,24 +80,25 @@ export default function Menu({setSvgs, svgs, randomStylePresset, traits, setTrai
 
     const addFolder = () => {
         let newArr = [...traits]
-        newArr.push({folderName: '', options: folders, selectedOption: '', order: 0, visible: true, locked: false})
+        newArr.push({folderName: '', options: folders, selectedOption: '', visible: true, locked: false})
         setTraits(newArr)
         // console.log(traits)
     }
 
-    const setSelect = (indx: number, elem: string, name: string) => {
-        if(name === '') getTraits(indx, elem) 
+    const setSelect = (index: number, elem: string, name: string) => {
+        if(name === '') getTraits(index, elem) 
         else{
-            getTrait(indx, elem)
+            getTrait(index, elem)
             let newArr = [...traits]
-            newArr[indx].selectedOption = elem
+            newArr[index].selectedOption = elem
             setTraits(newArr)
+            document.getElementById(`myDropdown${index}`)?.classList.toggle("show");
         }
     }
 
     const getTraits = (index: number, e: string) => {
         console.log(e)
-        axios.post('https://limitless-island-76560.herokuapp.com/get_traits', {
+        axios.post('http://localhost:8000/get_traits', {
             trait: e
         })
         .then((res) => {
@@ -99,25 +106,24 @@ export default function Menu({setSvgs, svgs, randomStylePresset, traits, setTrai
             let newArr = [...traits]
             newArr[index].folderName = e
             newArr[index].options = res.data
-            newArr[index].order = index
             setTraits(newArr)
         })
     }
 
     const getTrait = (index: number, e: string) => {
         console.log(e)
-        axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
+        axios.post('http://localhost:8000/get_trait', {
             file: e,
             trait: traits[index].folderName
         })
         .then((res) => {
-            let newArr = [...svgs]
+            let newArr = [...traits]
             if(newArr[index]) {
                 console.log(newArr[index].svg)
                 newArr[index].svg = res.data
             }
-            else newArr.push({index: index, svg: res.data, visible: true, locked: false})
-            setSvgs(newArr)
+            else newArr.push({folderName: '', options: [], selectedOption: '', svg: res.data, visible: true, locked: false})
+            setTraits(newArr)
         })
     }
 
@@ -129,17 +135,13 @@ export default function Menu({setSvgs, svgs, randomStylePresset, traits, setTrai
         if(selectedOption){
             console.log(indx, indx-1)
             let newArr = [...traits]
-            let newSvgs = [...svgs]
             if(name === 'Up'){
                 move(indx, indx-1, newArr);
-                move(indx, indx-1, newSvgs);
             }else{
                 move(indx, indx+1, newArr);
-                move(indx, indx+1, newSvgs);
             }
             console.log(newArr)
             setTraits(newArr)
-            setSvgs(newSvgs)
         }
     }
 
@@ -149,24 +151,19 @@ export default function Menu({setSvgs, svgs, randomStylePresset, traits, setTrai
             let elem = arr[Math.floor(Math.random() * arr.length)]
             console.log(elem)
             setSelect(indx, elem, folderName)
+
         }
     }
 
     function visible(name: string, indx: number){
-        let newSvgs = [...svgs]
         let newTraits = [...traits]
         newTraits[indx].visible = !newTraits[indx].visible
-        newSvgs[indx].visible = !newSvgs[indx].visible
-        setSvgs(newSvgs)
         setTraits(newTraits)
     }
 
     function lockSvg(name: string, indx: number){
-        let newSvgs = [...svgs]
         let newTraits = [...traits]
-        newSvgs[indx].locked = !newSvgs[indx].locked
         newTraits[indx].locked = !newTraits[indx].locked
-        setSvgs(newSvgs)
         setTraits(newTraits)
     }
 
@@ -214,8 +211,60 @@ export default function Menu({setSvgs, svgs, randomStylePresset, traits, setTrai
         return returnValue
     }
 
+    function myFunction(index: number) {
+        document.getElementById(`myDropdown${index}`)?.classList.toggle("show");
+    }
+    window.onclick = function(event) {
+        // if (!event.target?.matches('.dropbtn')) {
+        //   var dropdowns = document.getElementsByClassName("dropdown-content");
+        //   var i;
+        //   for (i = 0; i < dropdowns.length; i++) {
+        //     var openDropdown = dropdowns[i];
+        //     if (openDropdown.classList.contains('show')) {
+        //       openDropdown.classList.remove('show');
+        //     }
+        //   }
+        // }
+    }
+
+    function removeElem(index: number){
+        let newArr = [...traits]
+        newArr.splice(index, 1);
+        setTraits(newArr)
+    }
+
+    function lockColorFunc(){
+        setLockColor(!lockColor)
+    }
+
+    function randomColor(){
+        setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length))
+    }
+
     return(
         <div className='generator_menu'>
+            <span>
+                <div className='points'>
+                    {color_menu_points.map((item, indx) => (
+                        <button key={indx} onClick={() => item.func()}>
+                            {
+                            <img src={item.img} style={item.img === Lock&&lockColor ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
+                            }
+                        </button>    
+                    ))}
+                </div>
+                <div className='direction'>
+                    <div className="dropdown">
+                        <button onClick={() => myFunction(9999)} className="dropbtn">{Object.entries(colors)[randomStylePresset][0]}</button>
+                        <div id="myDropdown9999" className="dropdown-content">
+                        {Object.entries(colors).map((item, index) => (
+                            <div key={index} onClick={() => {setRandomStylePresset(index); myFunction(9999)}}>{item[0]}</div>
+                        ))}
+                        </div>
+  
+                    </div>
+                </div>
+            </span>            
             {traits.map((el, index) => (
                 <span key={index}>
                     <div className='points'>
@@ -223,21 +272,27 @@ export default function Menu({setSvgs, svgs, randomStylePresset, traits, setTrai
                            <button key={indx} onClick={() => item.func && item.func(item.name, index, el.folderName, el.selectedOption)}>
                                {
                                 item.img === Boots ? <img src={item.img} style={checkValue(el.folderName, el.selectedOption) ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
-                                : <img src={item.img} style={item.img === Lock&&el.locked || item.img === Eye&&!el.visible ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
+                                : <img src={item.img} style={item.img === Lock&&el.locked || item.img === Eye&&el.visible ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
                                }
                             </button>    
                         ))}
                     </div>
                     <div className='direction'>
-                        <label>
-                            <img src={Pen} alt="pen" />
-                            {el.folderName}
-                        </label>
-                        <select id="folder" value={el.selectedOption ? el.selectedOption : ''}>
-                            {el.options.map((elem: any, indx: number) => (
-                                <option key={indx} value={elem} onClick={() => setSelect(index, elem, el.folderName)}>{elem}</option>
-                            ))}
-                        </select>
+                        <header>
+                            <label>
+                                <img src={Pen} alt="pen" />
+                                {el.folderName}
+                            </label>
+                            <button onClick={() => removeElem(index)}>&#10005;</button>
+                        </header>
+                        <div className="dropdown">
+                            <button onClick={() => myFunction(index)} className="dropbtn">{el.selectedOption ? el.selectedOption : 'Choose a trait'}</button>
+                            <div id={"myDropdown"+index} className="dropdown-content">
+                                {el.options.map((elem: any, indx: number) => (
+                                    <div key={indx} onClick={() => setSelect(index, elem, el.folderName)}>{elem}</div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </span>
             ))}

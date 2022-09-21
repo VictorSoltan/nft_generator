@@ -8,12 +8,12 @@ import colors from './assets/colors.json'
 
 function App() {
 
-  let [svgs, setSvgs] = React.useState([]),
-  [traits, setTraits] = React.useState([
-    {folderName: '', options: [], selectedOption: '', order: 0, visible: true, locked: false }
+  let [traits, setTraits] = React.useState([
+    {folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }
   ]),
   [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors).length)),
-  [linkElems, setLinkElems] = React.useState <any> (localStorage.getItem("elemLinks") ? JSON.parse(localStorage.getItem("elemLinks")!) : [])
+  [linkElems, setLinkElems] = React.useState <any> (localStorage.getItem("elemLinks") ? JSON.parse(localStorage.getItem("elemLinks")!) : []),
+  [lockColor, setLockColor] = React.useState <boolean> (false);
 
   React.useEffect(() => {
     console.log(linkElems)
@@ -21,8 +21,8 @@ function App() {
 
   return (
     <div className="App">
-      <NftView svgs={svgs} setSvgs={setSvgs} randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} colors={colors} traits={traits} setTraits={setTraits} linkElems={linkElems} />
-      <Menu setSvgs={setSvgs} svgs={svgs} randomStylePresset={randomStylePresset} traits={traits} setTraits={setTraits} linkElems={linkElems} setLinkElems={setLinkElems} />
+      <NftView randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} lockColor={lockColor} colors={colors} traits={traits} setTraits={setTraits} linkElems={linkElems} />
+      <Menu randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} lockColor={lockColor} setLockColor={setLockColor} traits={traits} setTraits={setTraits} linkElems={linkElems} setLinkElems={setLinkElems} />
     </div>
   );
 }

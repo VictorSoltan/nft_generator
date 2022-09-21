@@ -11,8 +11,8 @@ import axios from 'axios'
 
 import { Style } from 'react-style-tag';
 
-export default function NftView({svgs, setSvgs, randomStylePresset, setRandomStylePresset, colors, traits, setTraits, linkElems} : 
-    {svgs: any; setSvgs: any; randomStylePresset: number; setRandomStylePresset: any; colors: object; traits: Array<any>; setTraits: any; linkElems: any;} ) {
+export default function NftView({randomStylePresset, setRandomStylePresset, lockColor, colors, traits, setTraits, linkElems} : 
+    {randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: object; traits: Array<any>; setTraits: any; linkElems: any;} ) {
 
     let [favorites, setFavorites] = React.useState <Array<any>> ([]),
         [nftNumb, setNftNumb] = React.useState <any>('0001'),
@@ -46,11 +46,12 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
         let url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
             let downloadLink = document.createElement("a");
             downloadLink.href = url;
-            downloadLink.download = "nft_"+nftNumb+".svg";
+            downloadLink.download = nftName+"_"+nftNumb+".svg";
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
-        setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length))    
+            
+        if(!lockColor) setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length))    
         setNftNumb(zeroPad(Number(nftNumb) + 1))
     }
 
@@ -60,7 +61,7 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
 
         for(let x=0; x<traits.length; x++){
             let traitName = random('random', x,  traits[x].folderName)
-            await axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
+            await axios.post('http://localhost:8000/get_trait', {
                 file: traitName,
                 trait: traits[x].folderName
             })
@@ -68,11 +69,11 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
                 console.log(res.data)
                 console.log(traitName)
                 
-                if(svgs[x].locked) {
-                    newSvgs.push({index: x, svg: svgs[x].svg, visible: svgs[x].visible, locked: true})
+                if(traits[x].locked) {
+                    newSvgs.push({index: x, svg: traits[x].svg, visible: traits[x].visible, locked: true})
                 }else{
                     newTrait[x].selectedOption = traitName
-                    newSvgs.push({index: x, svg: res.data, visible: svgs[x].visible, locked: false})
+                    newSvgs.push({index: x, svg: res.data, visible: traits[x].visible, locked: false})
                 }
             })
         }
@@ -81,7 +82,7 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
             for(let q=0; q<traits.length; q++){
                 if(linkElems[x].folderSecond===traits[q].folderName && linkElems[x].selectSecond===traits[q].selectedOption){
                     console.log('second')
-                    await axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
+                    await axios.post('http://localhost:8000/get_trait', {
                         file: linkElems[x].selectedFirst,
                         trait: linkElems[x].folderFirst
                     })
@@ -90,12 +91,11 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
                         let index = traits.findIndex(el => el.folderName === linkElems[x].folderFirst);
                         console.log(index)
                         newTrait[index].selectedOption = linkElems[x].selectedFirst
-                        newSvgs[index].svg = res.data
+                        newTrait[index].svg = res.data
                     })
                 }
             }
         }        
-        setSvgs(newSvgs)
         setTraits(newTrait)
     }
 
@@ -118,9 +118,9 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
     }
 
    async function addToFavorites(){
-        if(svgs.length){
+        if(traits.length){
             let newFavorites = [...favorites]
-            newFavorites.unshift({svgs: JSON.parse(JSON.stringify(svgs)), traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
+            newFavorites.unshift({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
             console.log(newFavorites)
             setFavorites(newFavorites)
             console.log(randomStylePresset)
@@ -131,10 +131,9 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
     function swapNfts(indx: number){
 
         let newFavorites = [...favorites]
-        newFavorites.push({svgs: JSON.parse(JSON.stringify(svgs)), traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
+        newFavorites.push({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
         newFavorites = [...newFavorites.filter(el => el !== favorites[indx])]
         
-        setSvgs(favorites[indx].svgs)
         setTraits(favorites[indx].traits)
         console.log('traits ', favorites[indx].traits)
         setRandomStylePresset(favorites[indx].colorPreset)
@@ -177,6 +176,12 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
         }
     }, [favorites])
 
+    function removeElem(index: number){
+        let newArr = [...favorites]
+        newArr.splice(index, 1);
+        setFavorites(newArr)
+    }
+
     return(
         <div className='nft_preview'>
             <span className='nft_name'>
@@ -186,13 +191,10 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
             </span>
             <div className='nft_generated'>
                 <svg id="svg" className='svg svgOuter' >
-                    {svgs.map((el: any, index: number) => (
+                    {traits.map((el: any, index: number) => (
                         el.visible && <svg key={index} className='' dangerouslySetInnerHTML={{__html: el.svg}}/>
                     ))}
                 </svg>    
-                {/* <div id="svg" dangerouslySetInnerHTML={{__html: }}/> */}
-                {/* <div id="svg" > */}
-                    {/* <Nft /> */}
                 <div>
                     <img src={Generate} alt="nft" onClick={() => generate()} />
                     <img src={Choosen} alt="nft" onClick={() => addToFavorites()}  />
@@ -203,11 +205,15 @@ export default function NftView({svgs, setSvgs, randomStylePresset, setRandomSty
                 {favorites.map((el, indx) => (
                     <div key={indx}>
                         <svg id="svg" className={'svgOuter'+indx}>
-                            {el.svgs.map((elem: any, index: number) => (
+                            {el.traits.map((elem: any, index: number) => (
                                 elem.visible && <svg key={index} className='' dangerouslySetInnerHTML={{__html: elem.svg}}/>
                             ))}
                         </svg>  
-                        <img src={Up} alt="nft" onClick={() => swapNfts(indx)} />
+                        <div className='favorites_side_menu'>
+                            <button onClick={() => removeElem(indx)}>&#10005;</button>
+
+                            <img src={Up} alt="nft" onClick={() => swapNfts(indx)} />
+                        </div>
                     </div>
                 ))}
             </div>
