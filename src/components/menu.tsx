@@ -92,7 +92,7 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
             let newArr = [...traits]
             newArr[index].selectedOption = elem
             setTraits(newArr)
-            document.getElementById(`myDropdown${index}`)?.classList.toggle("show");
+            document.getElementById(`myDropdown${index}`)?.classList.remove("show");
         }
     }
 
@@ -214,18 +214,19 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
     function myFunction(index: number) {
         document.getElementById(`myDropdown${index}`)?.classList.toggle("show");
     }
-    window.onclick = function(event) {
-        // if (!event.target?.matches('.dropbtn')) {
-        //   var dropdowns = document.getElementsByClassName("dropdown-content");
-        //   var i;
-        //   for (i = 0; i < dropdowns.length; i++) {
-        //     var openDropdown = dropdowns[i];
-        //     if (openDropdown.classList.contains('show')) {
-        //       openDropdown.classList.remove('show');
-        //     }
-        //   }
-        // }
-    }
+    // window.onclick = function(event) {
+    //     let dropbtn = event.target as any
+    //     if (!dropbtn?.matches('.dropbtn')) {
+    //       var dropdowns = document.getElementsByClassName("dropdown-content");
+    //       var i;
+    //       for (i = 0; i < dropdowns.length; i++) {
+    //         var openDropdown = dropdowns[i];
+    //         if (openDropdown.classList.contains('show')) {
+    //           openDropdown.classList.remove('show');
+    //         }
+    //       }
+    //     }
+    // }
 
     function removeElem(index: number){
         let newArr = [...traits]
