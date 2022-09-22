@@ -16,8 +16,8 @@ import axios from 'axios'
 import colors from '../assets/colors.json'
 import { unwatchFile } from 'fs'
 
-export default function Menu({randomStylePresset, setRandomStylePresset, lockColor, setLockColor, traits, setTraits, linkElems, setLinkElems} : 
-    {randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean; setLockColor: any; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
+export default function Menu({folderName, randomStylePresset, setRandomStylePresset, lockColor, setLockColor, traits, setTraits, linkElems, setLinkElems} : 
+    {folderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean; setLockColor: any; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
 
 
     React.useEffect(() => {
@@ -66,17 +66,22 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
 
 
     React.useEffect(() => {
-        axios.get('https://limitless-island-76560.herokuapp.com/get_folders')
+        if(folderName!==''){
+            axios.post('https://limitless-island-76560.herokuapp.com/get_folders', {
+                folder: folderName
+            })
             .then((res) => {
                 console.log(res.data)
                 let newArr = [...traits]
                 for(let x=0; x<newArr.length; x++){
                     newArr[x].options = res.data
                 }
+                console.log('res.data ', res.data)
                 setTraits(newArr)
                 setFolders(res.data)
             })
-    }, [])
+        }
+    }, [folderName])
 
     const addFolder = () => {
         let newArr = [...traits]
@@ -92,7 +97,6 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
             let newArr = [...traits]
             newArr[index].selectedOption = elem
             setTraits(newArr)
-            document.getElementById(`myDropdown${index}`)?.classList.remove("show");
         }
     }
 
@@ -214,19 +218,6 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
     function myFunction(index: number) {
         document.getElementById(`myDropdown${index}`)?.classList.toggle("show");
     }
-    // window.onclick = function(event) {
-    //     let dropbtn = event.target as any
-    //     if (!dropbtn?.matches('.dropbtn')) {
-    //       var dropdowns = document.getElementsByClassName("dropdown-content");
-    //       var i;
-    //       for (i = 0; i < dropdowns.length; i++) {
-    //         var openDropdown = dropdowns[i];
-    //         if (openDropdown.classList.contains('show')) {
-    //           openDropdown.classList.remove('show');
-    //         }
-    //       }
-    //     }
-    // }
 
     function removeElem(index: number){
         let newArr = [...traits]
@@ -289,7 +280,7 @@ export default function Menu({randomStylePresset, setRandomStylePresset, lockCol
                         <div className="dropdown">
                             <button onClick={() => myFunction(index)} className="dropbtn">{el.selectedOption ? el.selectedOption : 'Choose a trait'}</button>
                             <div id={"myDropdown"+index} className="dropdown-content">
-                                {el.options.map((elem: any, indx: number) => (
+                                {el.options && el.options.map((elem: any, indx: number) => (
                                     <div key={indx} onClick={() => setSelect(index, elem, el.folderName)}>{elem}</div>
                                 ))}
                             </div>

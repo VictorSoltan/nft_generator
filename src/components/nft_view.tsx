@@ -11,8 +11,23 @@ import axios from 'axios'
 
 import { Style } from 'react-style-tag';
 
-export default function NftView({randomStylePresset, setRandomStylePresset, lockColor, colors, traits, setTraits, linkElems} : 
-    {randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: object; traits: Array<any>; setTraits: any; linkElems: any;} ) {
+export default function NftView({folderName, setFolderName, randomStylePresset, setRandomStylePresset, lockColor, colors, traits, setTraits, linkElems} : 
+    {folderName: string; setFolderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: object; traits: Array<any>; setTraits: any; linkElems: any;} ) {
+
+    let [folders, setFolders] = React.useState([])
+
+    React.useEffect(() => {
+        axios.get('https://limitless-island-76560.herokuapp.com/get_main_folders')
+        .then((res) => {
+            console.log(res.data)
+            setFolders(res.data)
+            setFolderName(res.data[0])
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+
+    }, [])
 
     let [favorites, setFavorites] = React.useState <Array<any>> ([]),
         [nftNumb, setNftNumb] = React.useState <any>('0001'),
@@ -56,8 +71,7 @@ export default function NftView({randomStylePresset, setRandomStylePresset, lock
     }
 
     async function generate(){
-        let newSvgs: any[] = [],
-        newTrait = [...traits]
+        let newTrait = [...traits]
 
         for(let x=0; x<traits.length; x++){
             let traitName = random('random', x,  traits[x].folderName)
@@ -179,9 +193,74 @@ export default function NftView({randomStylePresset, setRandomStylePresset, lock
         newArr.splice(index, 1);
         setFavorites(newArr)
     }
+    
+    let selectedFile = React.useRef <any> (null);
+
+    const handleSubmit = async(event: any) => {
+        event.preventDefault()
+        let formData = new FormData();
+        formData.append("data", selectedFile.current);
+        try {
+            const file = selectedFile.current;
+            const form = new FormData() as any;
+            form.append('file', file);
+
+            axios.post('https://limitless-island-76560.herokuapp.com/upload', form, {
+                headers: {'Content-Type': 'multipart/form-data'}
+            })        
+            .then((res) => {
+                console.log('res.data', res.data)
+                setFolders(res.data)
+                setFolderName(res.data[0])
+            })
+
+        } catch(err) {
+          console.log(err)
+        }
+      }
+
+    const handleFileSelect = (event: any) => {
+        selectedFile.current = event.target.files[0]
+    }
+
+    const  deleteFolder = async (fldrName: string) => {
+        if (window.confirm('Are you sure you want to delete this folder from database?')) {
+            await axios.post('https://limitless-island-76560.herokuapp.com/deleteFolder', {
+                folderName: fldrName
+            }).then((res) => {
+                console.log(res.data)
+                if(fldrName === folderName){
+                    if(res.data[0]) setFolderName(res.data[0])
+                    else setFolderName('')
+                    setTraits([{folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }])
+                }
+                setFolders(res.data)
+            })
+        }           
+    }
+
+    function setNewFolder(item: string){
+        setFolderName(item)
+        setTraits([{folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }])
+    }
 
     return(
         <div className='nft_preview'>
+            <form onSubmit={handleSubmit}>
+                <input type="file" onChange={handleFileSelect}/>
+                <input type="submit" value="Upload File" />
+            </form>            
+            <div className="dropdownFolders">
+                <button onClick={() => {document.getElementById(`myDropdownFolders`)?.classList.toggle("show")}} className="dropbtn">{folderName === '' ? folders[0] : folderName}</button>
+                <div id="myDropdownFolders" className="dropdown-content">
+                {folders.map((item, index) => (
+                    <span>
+                        <div key={index} onClick={() => {document.getElementById(`myDropdownFolders`)?.classList.toggle("show"); setNewFolder(item)}}>{item}</div>
+                        <button onClick={() => deleteFolder(item)}>&#10005;</button>
+                    </span>
+                ))}
+                </div>
+            </div>
             <span className='nft_name'>
                 <img src={Pen} alt="pen" onClick={() => setNftNameEdit(!nftNameEdit) } />
                 {nftNameEdit ? <input value={nftName} onChange={e => setNftName(e.target.value)}/>
@@ -200,7 +279,7 @@ export default function NftView({randomStylePresset, setRandomStylePresset, lock
                 </div>
             </div>
             <div className='favorites'>
-                {favorites.map((el, indx) => (
+                {favorites?.map((el, indx) => (
                     <div key={indx}>
                         <svg id="svg" className={'svgOuter'+indx}>
                             {el.traits.map((elem: any, index: number) => (

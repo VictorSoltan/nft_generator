@@ -8,7 +8,8 @@ import colors from './assets/colors.json'
 
 function App() {
 
-  let [traits, setTraits] = React.useState([
+  let [folderName, setFolderName] = React.useState(''), 
+  [traits, setTraits] = React.useState([
     {folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }
   ]),
   [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors).length)),
@@ -19,10 +20,17 @@ function App() {
     console.log(linkElems)
   }, [linkElems])
 
+  window.onclick = function(e: any){
+    let allDropdrown = document.querySelectorAll('.show')
+    for(let x=0; x<allDropdrown.length; x++){
+      if(e.target.nextSibling!==allDropdrown[x]) allDropdrown[x].classList.toggle('show')
+    }
+  }
+
   return (
     <div className="App">
-      <NftView randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} lockColor={lockColor} colors={colors} traits={traits} setTraits={setTraits} linkElems={linkElems} />
-      <Menu randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} lockColor={lockColor} setLockColor={setLockColor} traits={traits} setTraits={setTraits} linkElems={linkElems} setLinkElems={setLinkElems} />
+      <NftView folderName={folderName} setFolderName={setFolderName} randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} lockColor={lockColor} colors={colors} traits={traits} setTraits={setTraits} linkElems={linkElems} />
+      <Menu folderName={folderName} randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} lockColor={lockColor} setLockColor={setLockColor} traits={traits} setTraits={setTraits} linkElems={linkElems} setLinkElems={setLinkElems} />
     </div>
   );
 }
