@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/nft_generator/static/css/main.1b1374cd.css",
-    "main.js": "/nft_generator/static/js/main.595fd136.js",
+    "main.js": "/nft_generator/static/js/main.1039d757.js",
     "static/js/787.e8d26985.chunk.js": "/nft_generator/static/js/787.e8d26985.chunk.js",
     "static/media/generate.svg": "/nft_generator/static/media/generate.577ebd58abb74ab343522f5b1884314d.svg",
     "static/media/dice.svg": "/nft_generator/static/media/dice.273eaf213eeef529e86f8eab223dd9bf.svg",
@@ -16,11 +16,11 @@
     "static/media/down.svg": "/nft_generator/static/media/down.e5ddfb05728981dc4b97126c3da070b5.svg",
     "static/media/up.svg": "/nft_generator/static/media/up.405a040216bc6259c8aff2d57c95124c.svg",
     "main.1b1374cd.css.map": "/nft_generator/static/css/main.1b1374cd.css.map",
-    "main.595fd136.js.map": "/nft_generator/static/js/main.595fd136.js.map",
+    "main.1039d757.js.map": "/nft_generator/static/js/main.1039d757.js.map",
     "787.e8d26985.chunk.js.map": "/nft_generator/static/js/787.e8d26985.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1b1374cd.css",
-    "static/js/main.595fd136.js"
+    "static/js/main.1039d757.js"
   ]
 }
