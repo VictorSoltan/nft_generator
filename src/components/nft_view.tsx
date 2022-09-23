@@ -34,6 +34,17 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
         [nftName, setNftName] = React.useState <string>('nft'),
         [nftNameEdit, setNftNameEdit] = React.useState <boolean>(false)
 
+    React.useEffect(() => {
+        console.log(linkElems)
+        axios.get('https://limitless-island-76560.herokuapp.com/favorites')
+        .then((res) => {
+            console.log('favorites ', res.data)
+            setFavorites(res.data)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, [])        
+    
     function zeroPad(num: number) {
         return num.toString().padStart(4, "0");
     }        
@@ -77,7 +88,8 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
             let traitName = random('random', x,  traits[x].folderName)
             await axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
                 file: traitName,
-                trait: traits[x].folderName
+                trait: traits[x].folderName,
+                folder: folderName
             })
             .then((res) => {
                 console.log(res.data)
@@ -96,7 +108,8 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
                     console.log('second')
                     await axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
                         file: linkElems[x].selectedFirst,
-                        trait: linkElems[x].folderFirst
+                        trait: linkElems[x].folderFirst,
+                        folder: folderName
                     })
                     .then((res) => {
                         console.log(res.data)
@@ -132,9 +145,16 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
    async function addToFavorites(){
         if(traits.length){
             let newFavorites = [...favorites]
-            newFavorites.unshift({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
+            if(traits[0]?.svg) newFavorites.unshift({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
             console.log(newFavorites)
             setFavorites(newFavorites)
+            axios.post('https://limitless-island-76560.herokuapp.com/save_favorites', {
+                favorites: newFavorites
+            }).then((res) => {
+                // console.log(res)
+            }).catch((err) => {
+                // console.log(err)
+            })
             console.log(randomStylePresset)
             console.log(favorites.length)
         }
@@ -143,7 +163,7 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
     function swapNfts(indx: number){
 
         let newFavorites = [...favorites]
-        newFavorites.push({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
+        if(traits[0]?.svg) newFavorites.push({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
         newFavorites = [...newFavorites.filter(el => el !== favorites[indx])]
         
         setTraits(favorites[indx].traits)
@@ -192,6 +212,13 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
         let newArr = [...favorites]
         newArr.splice(index, 1);
         setFavorites(newArr)
+        axios.post('https://limitless-island-76560.herokuapp.com/save_favorites', {
+            favorites: newArr
+        }).then((res) => {
+            // console.log(res)
+        }).catch((err) => {
+            // console.log(err)
+        })
     }
     
     let selectedFile = React.useRef <any> (null);

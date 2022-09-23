@@ -6,6 +6,8 @@ import Menu from './components/menu'
 
 import colors from './assets/colors.json'
 
+import axios from 'axios'
+
 function App() {
 
   let [folderName, setFolderName] = React.useState(''), 
@@ -13,12 +15,19 @@ function App() {
     {folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }
   ]),
   [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors).length)),
-  [linkElems, setLinkElems] = React.useState <any> (localStorage.getItem("elemLinks") ? JSON.parse(localStorage.getItem("elemLinks")!) : []),
+  [linkElems, setLinkElems] = React.useState <any> ([]),
   [lockColor, setLockColor] = React.useState <boolean> (false);
 
   React.useEffect(() => {
     console.log(linkElems)
-  }, [linkElems])
+    axios.get('https://limitless-island-76560.herokuapp.com/elemLinks')
+    .then((res) => {
+      console.log(res.data)
+      setLinkElems(res.data)
+    }).catch((err) => {
+        console.log(err)
+    })
+  }, [])
 
   window.onclick = function(e: any){
     let allDropdrown = document.querySelectorAll('.show')

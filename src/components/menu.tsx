@@ -62,8 +62,8 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
     ]
 
     let [folders, setFolders] = React.useState([]),
-    pair = React.useRef<any>({avialiable: false, id: linkElems.length})
-
+    pair = React.useRef<any>({avialiable: false})
+    console.log('pair ', pair.current)
 
     React.useEffect(() => {
         if(folderName!==''){
@@ -102,33 +102,42 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
 
     const getTraits = (index: number, e: string) => {
         console.log(e)
-        axios.post('https://limitless-island-76560.herokuapp.com/get_traits', {
-            trait: e
-        })
-        .then((res) => {
-            console.log(res.data)
-            let newArr = [...traits]
-            newArr[index].folderName = e
-            newArr[index].options = res.data
-            setTraits(newArr)
-        })
+        if(folderName!==''){
+            axios.post('https://limitless-island-76560.herokuapp.com/get_traits', {
+                trait: e,
+                folder: folderName
+            })
+            .then((res) => {
+                console.log(res.data)
+                let newArr = [...traits]
+                newArr[index].folderName = e
+                newArr[index].options = res.data
+                setTraits(newArr)
+            })
+        }
     }
 
     const getTrait = (index: number, e: string) => {
         console.log(e)
-        axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
-            file: e,
-            trait: traits[index].folderName
-        })
-        .then((res) => {
-            let newArr = [...traits]
-            if(newArr[index]) {
-                console.log(newArr[index].svg)
-                newArr[index].svg = res.data
-            }
-            else newArr.push({folderName: '', options: [], selectedOption: '', svg: res.data, visible: true, locked: false})
-            setTraits(newArr)
-        })
+        if(folderName!==''){
+            axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
+                file: e,
+                trait: traits[index].folderName,
+                folder: folderName
+            })
+            .then((res) => {
+                let newArr = [...traits]
+                if(newArr[index]) {
+                    console.log(newArr[index].svg)
+                    newArr[index].svg = res.data
+                }
+                else newArr.push({folderName: '', options: [], selectedOption: '', svg: res.data, visible: true, locked: false})
+                setTraits(newArr)
+            })
+            .catch((err) => {
+                alert('there is no such trait in this collection')
+            })
+        }
     }
 
     function move(from: number, to: number, arr: Array<Object>) {
@@ -188,18 +197,24 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
                     newArr.push({folderFirst: folderName, selectedFirst: selectedOption, folderSecond: undefined, selectSecond: undefined})
                     pair.current.avialiable = true
                 }else{
-                    console.log(newArr[pair.current.id])
-                    newArr[pair.current.id].folderSecond = folderName
-                    newArr[pair.current.id].selectSecond = selectedOption
+                    console.log(newArr.length)
+                    console.log(newArr[newArr.length-1])
+                    newArr[newArr.length-1].folderSecond = folderName
+                    newArr[newArr.length-1].selectSecond = selectedOption
                 }
-                if(newArr[pair.current.id].selectSecond&&newArr[pair.current.id].selectedFirst){
-                    pair.current.id = pair.current.id+1 
+                if(newArr[newArr.length-1]?.selectSecond&&newArr[newArr.length-1]?.selectedFirst){
                     pair.current.avialiable = false
                 }
             }
             console.log(newArr)
             setLinkElems(newArr)
-            localStorage.setItem("elemLinks", JSON.stringify(newArr));
+            axios.post('https://limitless-island-76560.herokuapp.com/save_elemLinks', {
+                elemLinks: newArr
+            }).then((res) => {
+                // console.log(res)
+            }).catch((err) => {
+                // console.log(err)
+            })
         }
     }
 
