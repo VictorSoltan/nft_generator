@@ -200,6 +200,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         let newArr = [...favorites]
         newArr.splice(index, 1);
         setFavorites(newArr)
+        console.log('newArr ', newArr)
         axios.post(`${backAddress}save_favorites`, {
             favorites: newArr
         }).then((res) => {

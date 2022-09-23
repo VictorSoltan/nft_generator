@@ -109,7 +109,7 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
     }
 
     const getTraits = (index: number, e: string) => {
-        console.log(e)
+        console.log(`${backAddress}get_traits`)
         if(folderName!==''){
             axios.post(`${backAddress}get_traits`, {
                 trait: e,
@@ -283,8 +283,8 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                         <button onClick={() => myFunction(9999)} className="dropbtn">{Object.entries(colors)[randomStylePresset][0]}</button>
                         <div id="myDropdown9999" className="dropdown-content">
                         {Object.entries(colors).map((item, index) => (
-                            <span>
-                                <div key={index} onClick={() => {setRandomStylePresset(index); myFunction(9999)}}>{item[0]}</div>
+                            <span key={index} onClick={() => {setRandomStylePresset(index); myFunction(9999)}}>
+                                {item[0]}
                             </span>
                         ))}
                         </div>
@@ -321,8 +321,8 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                             <button onClick={() => myFunction(index)} className="dropbtn">{el.selectedOption ? el.selectedOption : 'Choose a trait'}</button>
                             <div id={"myDropdown"+index} className="dropdown-content">
                                 {el.options && el.options.map((elem: any, indx: number) => (
-                                    <span>
-                                        <div key={indx} onClick={() => setSelect(index, elem, el.folderName)}>{elem}</div>
+                                    <span key={indx} onClick={() => setSelect(index, elem, el.folderName)}>
+                                        {elem}
                                     </span>
                                 ))}
                             </div>
