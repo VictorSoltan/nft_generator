@@ -45,6 +45,14 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
                 }
             }
         })
+        let leftEyes = document.querySelectorAll('#filler-eyes-l')
+        for(let x = 0; x<leftEyes.length; x++){
+            leftEyes[x].setAttributeNS(null, 'clip-path', 'url(#lpath_1_)');
+        }
+        let rightEyes = document.querySelectorAll('#filler-eyes-r')
+        for(let x = 0; x<rightEyes.length; x++){
+            rightEyes[x].setAttributeNS(null, 'clip-path', 'url(#rpath_1_)');
+        }
     })
 
     const menu_points = [
