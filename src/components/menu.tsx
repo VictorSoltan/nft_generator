@@ -16,8 +16,8 @@ import axios from 'axios'
 import colors from '../assets/colors.json'
 import { unwatchFile } from 'fs'
 
-export default function Menu({folderName, randomStylePresset, setRandomStylePresset, lockColor, setLockColor, traits, setTraits, linkElems, setLinkElems} : 
-    {folderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean; setLockColor: any; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
+export default function Menu({backAddress, folderName, randomStylePresset, setRandomStylePresset, lockColor, setLockColor, traits, setTraits, linkElems, setLinkElems} : 
+    {backAddress: string; folderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean; setLockColor: any; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
 
 
     React.useEffect(() => {
@@ -75,7 +75,7 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
 
     React.useEffect(() => {
         if(folderName!==''){
-            axios.post('https://limitless-island-76560.herokuapp.com/get_folders', {
+            axios.post(`${backAddress}get_folders`, {
                 folder: folderName
             })
             .then((res) => {
@@ -111,7 +111,7 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
     const getTraits = (index: number, e: string) => {
         console.log(e)
         if(folderName!==''){
-            axios.post('https://limitless-island-76560.herokuapp.com/get_traits', {
+            axios.post(`${backAddress}get_traits`, {
                 trait: e,
                 folder: folderName
             })
@@ -128,7 +128,7 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
     const getTrait = (index: number, e: string) => {
         console.log(e)
         if(folderName!==''){
-            axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
+            axios.post(`${backAddress}get_trait`, {
                 file: e,
                 trait: traits[index].folderName,
                 folder: folderName
@@ -216,7 +216,7 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
             }
             console.log(newArr)
             setLinkElems(newArr)
-            axios.post('https://limitless-island-76560.herokuapp.com/save_elemLinks', {
+            axios.post(`${backAddress}save_elemLinks`, {
                 elemLinks: newArr
             }).then((res) => {
                 // console.log(res)
@@ -256,15 +256,25 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
         setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length))
     }
 
+    function styleButton(e: any){
+        e.target.style.transform = 'scale(0.9)'; e.target.style.opacity = '0.8'
+    }
+
+    function returnStyleButton(e: any){
+        e.target.style.transform = 'scale(1)'; e.target.style.opacity = '1'
+    }
     return(
         <div className='generator_menu'>
             <span>
                 <div className='points'>
                     {color_menu_points.map((item, indx) => (
-                        <button key={indx} onClick={() => item.func()}>
-                            {
+                        <button
+                            onMouseDown={e => styleButton(e)}
+                            onMouseLeave={e => returnStyleButton(e)} 
+                            onMouseUp={e => returnStyleButton(e)}
+                            onMouseOut={e => returnStyleButton(e)} 
+                            key={indx} onClick={() => item.func()}>
                             <img src={item.img} style={item.img === Lock&&lockColor ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
-                            }
                         </button>    
                     ))}
                 </div>
@@ -273,7 +283,9 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
                         <button onClick={() => myFunction(9999)} className="dropbtn">{Object.entries(colors)[randomStylePresset][0]}</button>
                         <div id="myDropdown9999" className="dropdown-content">
                         {Object.entries(colors).map((item, index) => (
-                            <div key={index} onClick={() => {setRandomStylePresset(index); myFunction(9999)}}>{item[0]}</div>
+                            <span>
+                                <div key={index} onClick={() => {setRandomStylePresset(index); myFunction(9999)}}>{item[0]}</div>
+                            </span>
                         ))}
                         </div>
   
@@ -284,7 +296,12 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
                 <span key={index}>
                     <div className='points'>
                         {menu_points.map((item, indx) => (
-                           <button key={indx} onClick={() => item.func && item.func(item.name, index, el.folderName, el.selectedOption)}>
+                           <button                             
+                            onMouseDown={e => styleButton(e)}
+                            onMouseLeave={e => returnStyleButton(e)} 
+                            onMouseUp={e => returnStyleButton(e)} 
+                            onMouseOut={e => returnStyleButton(e)} 
+                            key={indx} onClick={() => item.func && item.func(item.name, index, el.folderName, el.selectedOption)}>
                                {
                                 item.img === Boots ? <img src={item.img} style={checkValue(el.folderName, el.selectedOption) ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
                                 : <img src={item.img} style={item.img === Lock&&el.locked || item.img === Eye&&el.visible ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
@@ -304,7 +321,9 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
                             <button onClick={() => myFunction(index)} className="dropbtn">{el.selectedOption ? el.selectedOption : 'Choose a trait'}</button>
                             <div id={"myDropdown"+index} className="dropdown-content">
                                 {el.options && el.options.map((elem: any, indx: number) => (
-                                    <div key={indx} onClick={() => setSelect(index, elem, el.folderName)}>{elem}</div>
+                                    <span>
+                                        <div key={indx} onClick={() => setSelect(index, elem, el.folderName)}>{elem}</div>
+                                    </span>
                                 ))}
                             </div>
                         </div>
@@ -312,7 +331,11 @@ export default function Menu({folderName, randomStylePresset, setRandomStylePres
                 </span>
             ))}
             <div className='plus_trait'>
-                <img src={Plus} alt="add Elem" onClick={(() => addFolder())} />
+                <img src={Plus} alt="add Elem"                             
+                    onMouseDown={e => styleButton(e)}
+                    onMouseLeave={e => returnStyleButton(e)} 
+                    onMouseUp={e => returnStyleButton(e)}
+                    onMouseOut={e => returnStyleButton(e)} onClick={(() => addFolder())} />
             </div>
         </div>
     )

@@ -11,13 +11,13 @@ import axios from 'axios'
 
 import { Style } from 'react-style-tag';
 
-export default function NftView({folderName, setFolderName, randomStylePresset, setRandomStylePresset, lockColor, colors, traits, setTraits, linkElems} : 
-    {folderName: string; setFolderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: object; traits: Array<any>; setTraits: any; linkElems: any;} ) {
+export default function NftView({backAddress, folderName, setFolderName, randomStylePresset, setRandomStylePresset, lockColor, colors, traits, setTraits, linkElems} : 
+    {backAddress: string; folderName: string; setFolderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: object; traits: Array<any>; setTraits: any; linkElems: any;} ) {
 
     let [folders, setFolders] = React.useState([])
 
     React.useEffect(() => {
-        axios.get('https://limitless-island-76560.herokuapp.com/get_main_folders')
+        axios.get(`${backAddress}get_main_folders`)
         .then((res) => {
             console.log(res.data)
             setFolders(res.data)
@@ -36,7 +36,7 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
 
     React.useEffect(() => {
         console.log(linkElems)
-        axios.get('https://limitless-island-76560.herokuapp.com/favorites')
+        axios.get(`${backAddress}favorites`)
         .then((res) => {
             console.log('favorites ', res.data)
             setFavorites(res.data)
@@ -86,7 +86,7 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
 
         for(let x=0; x<traits.length; x++){
             let traitName = random('random', x,  traits[x].folderName)
-            await axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
+            await axios.post(`${backAddress}get_trait`, {
                 file: traitName,
                 trait: traits[x].folderName,
                 folder: folderName
@@ -106,7 +106,7 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
             for(let q=0; q<traits.length; q++){
                 if(linkElems[x].folderSecond===traits[q].folderName && linkElems[x].selectSecond===traits[q].selectedOption){
                     console.log('second')
-                    await axios.post('https://limitless-island-76560.herokuapp.com/get_trait', {
+                    await axios.post(`${backAddress}get_trait`, {
                         file: linkElems[x].selectedFirst,
                         trait: linkElems[x].folderFirst,
                         folder: folderName
@@ -148,7 +148,7 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
             if(traits[0]?.svg) newFavorites.unshift({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
             console.log(newFavorites)
             setFavorites(newFavorites)
-            axios.post('https://limitless-island-76560.herokuapp.com/save_favorites', {
+            axios.post(`${backAddress}save_favorites`, {
                 favorites: newFavorites
             }).then((res) => {
                 // console.log(res)
@@ -178,22 +178,10 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
             for(let x = 0; x<favorites.length; x++){
                 console.log(x)
                 let obj = Object.entries(colors)[favorites[x].colorPreset][1]
-                // Object.entries(obj).map(item => {
-                //     console.log(document.querySelectorAll(`#${item[0]}`)[x+1])
-                //     if(document.querySelectorAll(`#${item[0]}`)[x+1]){
-                //         document.querySelectorAll<any>(`#${item[0]}`)[x+1]!.style.fill = item[1] 
-                //     }
-                // })
 
                 Object.entries(obj).map(item => {
-                    // console.log(item)
                     if(document.querySelector(`#${item[0]}`)){
                         let elem = document.querySelectorAll<any>(`#${item[0]}`)
-                        // console.log(elem[0].parentNode?.parentNode?.parentNode)
-                        // let className = elem[0].parentNode?.parentNode?.parentNode as any
-                        // console.log(className.classList[2])
-        
-                        
                         for(let q=0; q<elem.length; q++){
                             let className = elem[q].parentNode?.parentNode?.parentNode as any
                             console.log(className)
@@ -212,7 +200,7 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
         let newArr = [...favorites]
         newArr.splice(index, 1);
         setFavorites(newArr)
-        axios.post('https://limitless-island-76560.herokuapp.com/save_favorites', {
+        axios.post(`${backAddress}save_favorites`, {
             favorites: newArr
         }).then((res) => {
             // console.log(res)
@@ -232,7 +220,7 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
             const form = new FormData() as any;
             form.append('file', file);
 
-            axios.post('https://limitless-island-76560.herokuapp.com/upload', form, {
+            axios.post(`${backAddress}upload`, form, {
                 headers: {'Content-Type': 'multipart/form-data'}
             })        
             .then((res) => {
@@ -252,7 +240,7 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
 
     const  deleteFolder = async (fldrName: string) => {
         if (window.confirm('Are you sure you want to delete this folder from database?')) {
-            await axios.post('https://limitless-island-76560.herokuapp.com/deleteFolder', {
+            await axios.post(`${backAddress}deleteFolder`, {
                 folderName: fldrName
             }).then((res) => {
                 console.log(res.data)
@@ -271,11 +259,27 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
         setTraits([{folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }])
     }
 
+    function styleButton(e: any){
+        e.target.style.transform = 'scale(0.9)'; e.target.style.opacity = '0.8'
+    }
+
+    function returnStyleButton(e: any){
+        e.target.style.transform = 'scale(1)'; e.target.style.opacity = '1'
+    }
+
+    const points = [
+        {img: Generate, func: generate},
+        {img: Choosen, func: addToFavorites},
+        {img: Save, func: downloadSvg}
+    ]
+
     return(
         <div className='nft_preview'>
             <form onSubmit={handleSubmit}>
                 <input type="file" onChange={handleFileSelect}/>
-                <input type="submit" value="Upload File" />
+                <input type="submit" value="Upload File" 
+                    onMouseDown={e => styleButton(e)} onMouseLeave={e => returnStyleButton(e)} 
+                    onMouseUp={e => returnStyleButton(e)} onMouseOut={e => returnStyleButton(e)} />
             </form>            
             <div className="dropdownFolders">
                 <button onClick={() => {document.getElementById(`myDropdownFolders`)?.classList.toggle("show")}} className="dropbtn">{folderName === '' ? folders[0] : folderName}</button>
@@ -300,9 +304,14 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
                     ))}
                 </svg>    
                 <div>
-                    <img src={Generate} alt="nft" onClick={() => generate()} />
-                    <img src={Choosen} alt="nft" onClick={() => addToFavorites()}  />
-                    <img src={Save} alt="nft" onClick={() => downloadSvg()} />
+                    {points.map((item, index) => (
+                        <img src={item.img} alt="nft" 
+                            onMouseDown={e => styleButton(e)}
+                            onMouseLeave={e => returnStyleButton(e)} 
+                            onMouseUp={e => returnStyleButton(e)}
+                            onMouseOut={e => returnStyleButton(e)} 
+                            onClick={() => item.func()} />
+                    ))}
                 </div>
             </div>
             <div className='favorites'>
@@ -316,7 +325,12 @@ export default function NftView({folderName, setFolderName, randomStylePresset, 
                         <div className='favorites_side_menu'>
                             <button onClick={() => removeElem(indx)}>&#10005;</button>
 
-                            <img src={Up} alt="nft" onClick={() => swapNfts(indx)} />
+                            <img src={Up} alt="nft"                             
+                                onMouseDown={e => styleButton(e)}
+                                onMouseLeave={e => returnStyleButton(e)} 
+                                onMouseUp={e => returnStyleButton(e)}
+                                onMouseOut={e => returnStyleButton(e)}
+                                onClick={() => swapNfts(indx)} />
                         </div>
                     </div>
                 ))}

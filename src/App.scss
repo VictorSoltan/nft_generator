@@ -8,6 +8,9 @@
     width: 36%;
     .dropdownFolders, form{
       z-index: 9999;
+      input{
+        transition: all 0.4s;
+      }
     }
     .nft_name{
       margin-bottom: 30px;
@@ -44,6 +47,7 @@
         margin-top: 10px;
         margin-left: 10px;
         img{
+          transition: all 0.4s;
           width: 72px;
           cursor: pointer;
         }
@@ -65,10 +69,11 @@
             width: 20px;
             border: none;
             margin-bottom: 10px;
+            cursor: pointer;
           }
           img{
+            transition: all 0.4s;
             width: 72px;
-            cursor: pointer;
           }
         }
       }
@@ -90,7 +95,9 @@
           margin: 0;
           width: 32.1px;
           height: 32.1px;
+          transform: scale(1);
           img{
+            transform: scale(1);
             transition: all 0.4s;
             width: 26px;
             cursor: pointer;
@@ -126,6 +133,7 @@
       width: 110px;
       justify-content: flex-end;
       img{
+        transition: all 0.4s;
         cursor: pointer;
         width: 60px;
       }
@@ -190,11 +198,18 @@ div, span{
 
 .dropdown-content div {
   color: black;
-  padding: 6px 0px;
   text-decoration: none;
   display: block;
 }      
-.dropdown div:hover {background-color: #ddd;}
+
+.dropdown span {
+  padding: 4px 0px;
+  margin-bottom: 0 !important;
+}
+.dropdown span:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
 
 .show {display: block;}  
   // #hair {fill: #705ad7;}

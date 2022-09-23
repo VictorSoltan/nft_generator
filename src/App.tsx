@@ -16,11 +16,12 @@ function App() {
   ]),
   [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors).length)),
   [linkElems, setLinkElems] = React.useState <any> ([]),
-  [lockColor, setLockColor] = React.useState <boolean> (false);
+  [lockColor, setLockColor] = React.useState <boolean> (false),
+  backAddress = 'https://limitless-island-76560.herokuapp.com/';
 
   React.useEffect(() => {
     console.log(linkElems)
-    axios.get('https://limitless-island-76560.herokuapp.com/elemLinks')
+    axios.get(`${backAddress}elemLinks`)
     .then((res) => {
       console.log(res.data)
       setLinkElems(res.data)
@@ -38,8 +39,13 @@ function App() {
 
   return (
     <div className="App">
-      <NftView folderName={folderName} setFolderName={setFolderName} randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} lockColor={lockColor} colors={colors} traits={traits} setTraits={setTraits} linkElems={linkElems} />
-      <Menu folderName={folderName} randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset} lockColor={lockColor} setLockColor={setLockColor} traits={traits} setTraits={setTraits} linkElems={linkElems} setLinkElems={setLinkElems} />
+      <NftView backAddress={backAddress} folderName={folderName} setFolderName={setFolderName}
+        randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset}
+        lockColor={lockColor} colors={colors} traits={traits} setTraits={setTraits} linkElems={linkElems} />
+      <Menu backAddress={backAddress} folderName={folderName} 
+        randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset}
+        lockColor={lockColor} setLockColor={setLockColor}
+        traits={traits} setTraits={setTraits} linkElems={linkElems} setLinkElems={setLinkElems} />
     </div>
   );
 }
