@@ -14,8 +14,6 @@ import { Style } from 'react-style-tag';
 export default function NftView({backAddress, folderName, setFolderName, randomStylePresset, setRandomStylePresset, lockColor, colors, traits, setTraits, linkElems} : 
     {backAddress: string; folderName: string; setFolderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: any; traits: Array<any>; setTraits: any; linkElems: any;} ) {
 
-    let [folders, setFolders] = React.useState([])
-
     React.useEffect(() => {
         axios.get(`${backAddress}get_main_folders`)
         .then((res) => {
@@ -32,7 +30,10 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
     let [favorites, setFavorites] = React.useState <Array<any>> ([]),
         [nftNumb, setNftNumb] = React.useState <any>('0001'),
         [nftName, setNftName] = React.useState <string>('nft'),
-        [nftNameEdit, setNftNameEdit] = React.useState <boolean>(false)
+        [nftNameEdit, setNftNameEdit] = React.useState <boolean>(false),
+        [nftSizeEdit, setNftSizeEdit] = React.useState <boolean>(false),
+        [folders, setFolders] = React.useState([]),
+        [nftSize, setNftSize] = React.useState({X: '1000', Y: '1000'})
 
     React.useEffect(() => {
         console.log(linkElems)
@@ -66,7 +67,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         }
         
         //add xml declaration
-        source = '<?xml version="1.0" encoding="utf-8"?>\r\n<svg version="1.1" xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" viewBox="0 0 1000 1000">\r\n<style type="text/css">#hair {fill: #705ad7;}#nose {fill: #2db3a9;} #nose-D {fill: ;} #nose-L {fill: #7cc4c5;}  #earskin {fill: #f1d0e6;}#texture {fill: #5a2ae7;}#blacks {fill: #523259;}#whites {fill: #ffffff;}#nails {fill: #431f59;}#skin {fill: #856dec;}#skin-D {fill: #705ad7;}#skin-L {fill: #9b7fff;}#skin2 {fill: #c8e7c2;}#skin2-D {fill: #a0d9c2;}#skin2-L {fill: #e8fbe2;}#bone {fill: #523259;}#bone-D {fill: #431f59;}#bone-L {fill: #643c64;}#eye {fill: #dfeee8;}#eye-D {fill: #b5c9c0;}#eye-L {fill: #f1f2f2;}#pupil {fill: #ab281b;}#pupil-D {fill: #6e0500;}#pupil-L {fill: #f2a358;}</style>\r\n' + source+'\r\n</svg>';
+        source = `<?xml version="1.0" encoding="utf-8"?>\r\n<svg version="1.1" xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" viewBox="0 0 ${nftSize.X} ${nftSize.Y}">\r\n<style type="text/css">#hair {fill: #705ad7;}#nose {fill: #2db3a9;} #nose-D {fill: ;} #nose-L {fill: #7cc4c5;}  #earskin {fill: #f1d0e6;}#texture {fill: #5a2ae7;}#blacks {fill: #523259;}#whites {fill: #ffffff;}#nails {fill: #431f59;}#skin {fill: #856dec;}#skin-D {fill: #705ad7;}#skin-L {fill: #9b7fff;}#skin2 {fill: #c8e7c2;}#skin2-D {fill: #a0d9c2;}#skin2-L {fill: #e8fbe2;}#bone {fill: #523259;}#bone-D {fill: #431f59;}#bone-L {fill: #643c64;}#eye {fill: #dfeee8;}#eye-D {fill: #b5c9c0;}#eye-L {fill: #f1f2f2;}#pupil {fill: #ab281b;}#pupil-D {fill: #6e0500;}#pupil-L {fill: #f2a358;}</style>\r\n` + source+'\r\n</svg>';
         console.log(source)
         //convert svg source to URI data scheme.
         let url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
@@ -316,6 +317,17 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                             onClick={() => item.func()} />
                     ))}
                 </div>
+            </div>
+            <div className='nft_size'>
+            <span className='nft_name'>
+                <img src={Pen} alt="pen" onClick={() => setNftSizeEdit(!nftSizeEdit) } />
+                {nftSizeEdit ? <input value={nftSize.X} onChange={e => setNftSize({X:  e.target.value, Y: nftSize.Y})}/>
+                : <label>X: {nftSize.X} </label>}
+            </span>     
+            <span className='nft_name'>
+                {nftSizeEdit ? <input value={nftSize.Y} onChange={e => setNftSize({X: nftSize.X, Y:  e.target.value})}/>
+                : <label> Y: {nftSize.Y}</label>}
+            </span>                 
             </div>
             <div className='favorites'>
                 {favorites?.map((el, indx) => (
