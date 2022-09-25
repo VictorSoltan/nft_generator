@@ -16,8 +16,8 @@ function App() {
   [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors ? colors : {}).length)),
   [linkElems, setLinkElems] = React.useState <any> ([]),
   [lockColor, setLockColor] = React.useState <boolean> (false),
-  // backAddress = 'https://limitless-island-76560.herokuapp.com/';
-  backAddress = 'http://localhost:8000/';
+  backAddress = 'https://limitless-island-76560.herokuapp.com/';
+  // backAddress = 'http://localhost:8000/';
 
   React.useEffect(() => {
     console.log(linkElems)

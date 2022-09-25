@@ -33,14 +33,14 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         [nftNameEdit, setNftNameEdit] = React.useState <boolean>(false),
         [nftSizeEdit, setNftSizeEdit] = React.useState <boolean>(false),
         [folders, setFolders] = React.useState([]),
-        [nftSize, setNftSize] = React.useState({X: '1000', Y: '1000'})
+        [nftSize, setNftSize] = React.useState({X: '800', Y: '800'})
 
     React.useEffect(() => {
         console.log(linkElems)
         axios.get(`${backAddress}favorites`)
         .then((res) => {
             console.log('favorites ', res.data)
-            setFavorites(res.data)
+            setFavorites([...res.data])
         }).catch((err) => {
             console.log(err)
         })
@@ -146,11 +146,12 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
    async function addToFavorites(){
         if(traits.length){
             let newFavorites = [...favorites]
-            if(traits[0]?.svg) newFavorites.unshift({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
+            if(traits[0]?.svg) newFavorites.unshift({traits: traits, colorPreset: randomStylePresset})
             console.log(newFavorites)
             setFavorites(newFavorites)
             axios.post(`${backAddress}save_favorites`, {
-                favorites: newFavorites
+                traits: traits, 
+                colorPreset: randomStylePresset
             }).then((res) => {
                 // console.log(res)
             }).catch((err) => {
@@ -177,7 +178,6 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
     React.useEffect(() => {
         if(favorites.length){
             for(let x = 0; x<favorites.length; x++){
-                console.log(x)
                 if(colors){
                     let obj = Object.entries(colors!)[favorites[x].colorPreset][1] as any
 
@@ -201,16 +201,17 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
     function removeElem(index: number){
         let newArr = [...favorites]
-        newArr.splice(index, 1);
-        setFavorites(newArr)
-        console.log('newArr ', newArr)
-        axios.post(`${backAddress}save_favorites`, {
-            favorites: newArr
+
+        console.log('newArr ', index)
+        axios.post(`${backAddress}delete_favorite`, {
+            _id: newArr[index]._id
         }).then((res) => {
             // console.log(res)
         }).catch((err) => {
             // console.log(err)
         })
+        newArr.splice(index, 1);
+        setFavorites(newArr)
     }
     
     let selectedFile = React.useRef <any> (null);
@@ -302,7 +303,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                 : <label>{nftName}{'_'+nftNumb+'.svg'}</label>}
             </span>
             <div className='nft_generated'>
-                <svg id="svg" className='svg svgOuter' >
+                <svg id="svg" className='svg svgOuter' viewBox={`0 0 ${nftSize.X} ${nftSize.Y}`} >
                     {traits.map((el: any, index: number) => (
                         el.visible && <svg key={index} className='' dangerouslySetInnerHTML={{__html: el.svg}}/>
                     ))}
@@ -333,7 +334,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                 {favorites?.map((el, indx) => (
                     <div key={indx}>
                         <svg id="svg" className={'svgOuter'+indx}>
-                            {el.traits.map((elem: any, index: number) => (
+                            {el.traits && el.traits.map((elem: any, index: number) => (
                                 elem.visible && <svg key={index} className='' dangerouslySetInnerHTML={{__html: elem.svg}}/>
                             ))}
                         </svg>  

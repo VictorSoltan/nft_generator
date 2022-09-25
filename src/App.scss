@@ -13,7 +13,7 @@
       }
     }
     .nft_name{
-      margin-bottom: 30px;
+      margin-bottom: 15px;
       align-items: center;
       height: 30px;
       z-index: 100;
@@ -40,6 +40,7 @@
 
     }
     .nft_size{
+      margin-top: 10px;
       label, input{
         padding: 5px;
         width: 80px;     
@@ -48,16 +49,15 @@
     }
     .nft_generated{
       svg{
-        width: auto;
-        height: 340px;
-        margin: -80px -40px 0px;
+        min-width: 289px;
+        height: auto;
       }
       div{
         flex-direction: column;
-        justify-content: space-between;
-        margin-top: 10px;
+        // justify-content: space-between;
         margin-left: 10px;
         img{
+          margin-bottom: 10px;
           transition: all 0.4s;
           width: 72px;
           cursor: pointer;
@@ -68,9 +68,8 @@
       flex-direction: column;
       div{
         svg{
+          min-height: 289px;
           width: auto;
-          height: 340px;
-          margin: -80px -20px 0px;
         }
         .favorites_side_menu{
           flex-direction: column;
