@@ -40,7 +40,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         axios.get(`${backAddress}favorites`)
         .then((res) => {
             console.log('favorites ', res.data)
-            setFavorites([...res.data])
+            setFavorites([...res.data].reverse())
         }).catch((err) => {
             console.log(err)
         })
@@ -146,7 +146,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
    async function addToFavorites(){
         if(traits.length){
             let newFavorites = [...favorites]
-            if(traits[0]?.svg) newFavorites.unshift({traits: traits, colorPreset: randomStylePresset})
+            if(traits[0]?.svg) newFavorites.unshift({traits: JSON.parse(JSON.stringify(traits)), colorPreset: JSON.parse(JSON.stringify(randomStylePresset))})
             console.log(newFavorites)
             setFavorites(newFavorites)
             axios.post(`${backAddress}save_favorites`, {
@@ -310,7 +310,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                 </svg>    
                 <div>
                     {points.map((item, index) => (
-                        <img src={item.img} alt="nft" 
+                        <img key={index} src={item.img} alt="nft" 
                             onMouseDown={e => styleButton(e)}
                             onMouseLeave={e => returnStyleButton(e)} 
                             onMouseUp={e => returnStyleButton(e)}
