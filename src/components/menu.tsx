@@ -16,35 +16,36 @@ import axios from 'axios'
 import colors from '../assets/colors.json'
 import { unwatchFile } from 'fs'
 
-export default function Menu({backAddress, folderName, randomStylePresset, setRandomStylePresset, lockColor, setLockColor, traits, setTraits, linkElems, setLinkElems} : 
-    {backAddress: string; folderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean; setLockColor: any; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
+export default function Menu({backAddress, folderName, randomStylePresset, setRandomStylePresset, lockColor, setLockColor, colors, setColors, traits, setTraits, linkElems, setLinkElems} : 
+    {backAddress: string; folderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean; setLockColor: any; colors: any; setColors: any; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
 
 
     React.useEffect(() => {
-        let obj = Object.entries(colors)[randomStylePresset][1]
+        if(colors){
+            let obj = Object.entries(colors)[randomStylePresset][1] as any
 
         console.log( Object.entries(colors).length)
             
         // console.log(document.querySelector(`.svgOuter`)?.classList[1])
-
-        Object.entries(obj).map(item => {
-            // console.log(item)
-            if(document.querySelector(`#${item[0]}`)){
-                let elem = document.querySelectorAll<HTMLElement>(`#${item[0]}`)
-                // console.log(elem[0].parentNode?.parentNode?.parentNode)
-                // let className = elem[0].parentNode?.parentNode?.parentNode as any
-                // console.log(className.classList[2])
-
-                
-                for(let x=0; x<elem.length; x++){
-                    let className = elem[x].parentNode?.parentNode?.parentNode as any
-                    if(className.classList[1] === 'svgOuter' || className.parentNode?.classList[1] === 'svgOuter'){
-                        elem[x]!.style.fill = item[1]
-
+            Object.entries(obj).map(item => {
+                // console.log(item)
+                if(document.querySelector(`#${item[0]}`)){
+                    let elem = document.querySelectorAll<any>(`#${item[0]}`)
+                    // console.log(elem[0].parentNode?.parentNode?.parentNode)
+                    // let className = elem[0].parentNode?.parentNode?.parentNode as any
+                    // console.log(className.classList[2])
+    
+                    
+                    for(let x=0; x<elem.length; x++){
+                        let className = elem[x].parentNode?.parentNode?.parentNode as any
+                        if(className.classList[1] === 'svgOuter' || className.parentNode?.classList[1] === 'svgOuter'){
+                            elem[x]!.style.fill = item[1]
+    
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
         let leftEyes = document.querySelectorAll('#filler-eyes-l')
         for(let x = 0; x<leftEyes.length; x++){
             leftEyes[x].setAttributeNS(null, 'clip-path', 'url(#lpath_1_)');
@@ -87,6 +88,16 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                 console.log('res.data ', res.data)
                 setTraits(newArr)
                 setFolders(res.data)
+            })
+        }
+        if(folderName!==''){
+            axios.post(`${backAddress}get_colors`, {
+                folder: folderName
+            })
+            .then((res) => {
+                console.log(res.data)
+                console.log('res.data ', res.data)
+                setColors(res.data)
             })
         }
     }, [folderName])
@@ -280,9 +291,9 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                 </div>
                 <div className='direction'>
                     <div className="dropdown">
-                        <button onClick={() => myFunction(9999)} className="dropbtn">{Object.entries(colors)[randomStylePresset][0]}</button>
+                        <button onClick={() => myFunction(9999)} className="dropbtn">{colors ? Object.entries(colors)[randomStylePresset][0] : ''}</button>
                         <div id="myDropdown9999" className="dropdown-content">
-                        {Object.entries(colors).map((item, index) => (
+                        {colors && Object.entries(colors).map((item, index) => (
                             <span key={index} onClick={() => {setRandomStylePresset(index); myFunction(9999)}}>
                                 {item[0]}
                             </span>

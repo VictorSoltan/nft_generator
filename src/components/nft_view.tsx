@@ -12,7 +12,7 @@ import axios from 'axios'
 import { Style } from 'react-style-tag';
 
 export default function NftView({backAddress, folderName, setFolderName, randomStylePresset, setRandomStylePresset, lockColor, colors, traits, setTraits, linkElems} : 
-    {backAddress: string; folderName: string; setFolderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: object; traits: Array<any>; setTraits: any; linkElems: any;} ) {
+    {backAddress: string; folderName: string; setFolderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: any; traits: Array<any>; setTraits: any; linkElems: any;} ) {
 
     let [folders, setFolders] = React.useState([])
 
@@ -77,7 +77,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
             downloadLink.click();
             document.body.removeChild(downloadLink);
             
-        if(!lockColor) setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length))    
+        if(!lockColor&&colors) setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length))    
         setNftNumb(zeroPad(Number(nftNumb) + 1))
     }
 
@@ -177,21 +177,23 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         if(favorites.length){
             for(let x = 0; x<favorites.length; x++){
                 console.log(x)
-                let obj = Object.entries(colors)[favorites[x].colorPreset][1]
+                if(colors){
+                    let obj = Object.entries(colors!)[favorites[x].colorPreset][1] as any
 
-                Object.entries(obj).map(item => {
-                    if(document.querySelector(`#${item[0]}`)){
-                        let elem = document.querySelectorAll<any>(`#${item[0]}`)
-                        for(let q=0; q<elem.length; q++){
-                            let className = elem[q].parentNode?.parentNode?.parentNode as any
-                            console.log(className)
-                            console.log(`svgOuter${x}`)
-                            if(String(className.classList[0]) === `svgOuter${x}` || className.parentNode.classList[0] === `svgOuter${x}` ){
-                                elem[q]!.style.fill = item[1]
+                    Object.entries(obj).map(item => {
+                        if(document.querySelector(`#${item[0]}`)){
+                            let elem = document.querySelectorAll<any>(`#${item[0]}`)
+                            for(let q=0; q<elem.length; q++){
+                                let className = elem[q].parentNode?.parentNode?.parentNode as any
+                                console.log(className)
+                                console.log(`svgOuter${x}`)
+                                if(String(className.classList[0]) === `svgOuter${x}` || className.parentNode.classList[0] === `svgOuter${x}` ){
+                                    elem[q]!.style.fill = item[1]
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
         }
     }, [favorites])

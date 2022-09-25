@@ -4,8 +4,6 @@ import './App.scss';
 import NftView from './components/nft_view'
 import Menu from './components/menu'
 
-import colors from './assets/colors.json'
-
 import axios from 'axios'
 
 function App() {
@@ -14,10 +12,12 @@ function App() {
   [traits, setTraits] = React.useState([
     {folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }
   ]),
-  [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors).length)),
+  [colors, setColors] = React.useState(null),
+  [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors ? colors : {}).length)),
   [linkElems, setLinkElems] = React.useState <any> ([]),
   [lockColor, setLockColor] = React.useState <boolean> (false),
   backAddress = 'https://limitless-island-76560.herokuapp.com/';
+  // backAddress = 'http://localhost:8000/';
 
   React.useEffect(() => {
     console.log(linkElems)
@@ -44,7 +44,7 @@ function App() {
         lockColor={lockColor} colors={colors} traits={traits} setTraits={setTraits} linkElems={linkElems} />
       <Menu backAddress={backAddress} folderName={folderName} 
         randomStylePresset={randomStylePresset} setRandomStylePresset={setRandomStylePresset}
-        lockColor={lockColor} setLockColor={setLockColor}
+        lockColor={lockColor} setLockColor={setLockColor} colors={colors} setColors={setColors}
         traits={traits} setTraits={setTraits} linkElems={linkElems} setLinkElems={setLinkElems} />
     </div>
   );
