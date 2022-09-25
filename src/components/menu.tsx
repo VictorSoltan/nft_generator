@@ -29,13 +29,13 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
         // console.log(document.querySelector(`.svgOuter`)?.classList[1])
             Object.entries(obj).map(item => {
                 // console.log(item)
-                if(document.querySelector(`#${item[0]}`)){
+                try{
+                    if(document.querySelector(`#${item[0]}`)){
                     let elem = document.querySelectorAll<any>(`#${item[0]}`)
                     // console.log(elem[0].parentNode?.parentNode?.parentNode)
                     // let className = elem[0].parentNode?.parentNode?.parentNode as any
                     // console.log(className.classList[2])
     
-                    
                     for(let x=0; x<elem.length; x++){
                         let className = elem[x].parentNode?.parentNode?.parentNode as any
                         if(className.classList[1] === 'svgOuter' || className.parentNode?.classList[1] === 'svgOuter'){
@@ -43,7 +43,10 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
     
                         }
                     }
-                }
+                    }
+                }catch(e){
+                    console.log(e)
+                }                
             })
         }
         let leftEyes = document.querySelectorAll('#filler-eyes-l')
