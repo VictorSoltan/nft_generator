@@ -89,8 +89,8 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                     newArr[x].options = res.data
                 }
                 console.log('res.data ', res.data)
-                setTraits(newArr)
                 setFolders(res.data)
+                setTraits(newArr)
             })
         }
         if(folderName!==''){
