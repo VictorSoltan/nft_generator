@@ -87,20 +87,23 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
         for(let x=0; x<traits.length; x++){
             let traitName = random('random', x,  traits[x].folderName)
-            await axios.post(`${backAddress}get_trait`, {
-                file: traitName,
-                trait: traits[x].folderName,
-                folder: folderName
-            })
-            .then((res) => {
-                console.log(res.data)
-                console.log(traitName)
-                
-                if(!traits[x].locked) {
-                    newTrait[x].selectedOption = traitName
-                    newTrait[x].svg = res.data
-                }
-            })
+            if(traitName&&traits[x].folderName&&folderName){
+                await axios.post(`${backAddress}get_trait`, {
+                    file: traitName,
+                    trait: traits[x].folderName,
+                    folder: folderName
+                })
+                .then((res) => {
+                    console.log(res.data)
+                    console.log(traitName)
+                    
+                    if(!traits[x].locked) {
+                        newTrait[x].selectedOption = traitName
+                        newTrait[x].svg = res.data
+                    }
+                })
+            }
+
         }
         // console.log(newSvgs)
         for(let x=0; x<linkElems.length; x++){
@@ -118,6 +121,9 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                         console.log(index)
                         newTrait[index].selectedOption = linkElems[x].selectedFirst
                         newTrait[index].svg = res.data
+                    })
+                    .catch((err) =>{
+                        console.log(err)
                     })
                 }
             }
@@ -145,15 +151,13 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
    async function addToFavorites(){
         if(traits.length){
-            let newFavorites = [...favorites]
-            if(traits[0]?.svg) newFavorites.unshift({traits: JSON.parse(JSON.stringify(traits)), colorPreset: JSON.parse(JSON.stringify(randomStylePresset))})
-            console.log(newFavorites)
-            setFavorites(newFavorites)
             axios.post(`${backAddress}save_favorites`, {
                 traits: traits, 
                 colorPreset: randomStylePresset
             }).then((res) => {
-                // console.log(res)
+                console.log('addToFavorites ', res.data)
+                setFavorites([res.data, ...favorites])
+
             }).catch((err) => {
                 // console.log(err)
             })
@@ -186,8 +190,6 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                             let elem = document.querySelectorAll<any>(`#${item[0]}`)
                             for(let q=0; q<elem.length; q++){
                                 let className = elem[q].parentNode?.parentNode?.parentNode as any
-                                console.log(className)
-                                console.log(`svgOuter${x}`)
                                 if(String(className.classList[0]) === `svgOuter${x}` || className.parentNode.classList[0] === `svgOuter${x}` ){
                                     elem[q]!.style.fill = item[1]
                                 }
@@ -199,16 +201,18 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         }
     }, [favorites])
 
-    function removeElem(index: number){
+    function removeElem(_id: string, index: number){
         let newArr = [...favorites]
+
+        console.log(_id)
 
         console.log('newArr ', index)
         axios.post(`${backAddress}delete_favorite`, {
-            _id: newArr[index]._id
+            _id: _id
         }).then((res) => {
-            // console.log(res)
+            console.log(res)
         }).catch((err) => {
-            // console.log(err)
+            console.log(err)
         })
         newArr.splice(index, 1);
         setFavorites(newArr)
@@ -281,7 +285,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
     return(
         <div className='nft_preview'>
             <form onSubmit={handleSubmit}>
-                <input type="file" onChange={handleFileSelect}/>
+                <input type="file" onChange={handleFileSelect} accept=".zip"/>
                 <input type="submit" value="Upload File" 
                     onMouseDown={e => styleButton(e)} onMouseLeave={e => returnStyleButton(e)} 
                     onMouseUp={e => returnStyleButton(e)} onMouseOut={e => returnStyleButton(e)} />
@@ -339,7 +343,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                             ))}
                         </svg>  
                         <div className='favorites_side_menu'>
-                            <button onClick={() => removeElem(indx)}>&#10005;</button>
+                            <button onClick={() => removeElem(el._id, indx)}>&#10005;</button>
 
                             <img src={Up} alt="nft"                             
                                 onMouseDown={e => styleButton(e)}
