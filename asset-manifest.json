@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/nft_generator/static/css/main.68542002.css",
-    "main.js": "/nft_generator/static/js/main.dfcee76e.js",
+    "main.css": "/nft_generator/static/css/main.a31ed88b.css",
+    "main.js": "/nft_generator/static/js/main.5ceb6492.js",
     "static/js/787.e8d26985.chunk.js": "/nft_generator/static/js/787.e8d26985.chunk.js",
     "static/media/generate.svg": "/nft_generator/static/media/generate.577ebd58abb74ab343522f5b1884314d.svg",
     "static/media/dice.svg": "/nft_generator/static/media/dice.273eaf213eeef529e86f8eab223dd9bf.svg",
     "static/media/save.svg": "/nft_generator/static/media/save.ab80af7345571069b17ce083e01863a5.svg",
-    "static/media/plus.svg": "/nft_generator/static/media/plus.778919be81724f13c083889b1d75bc33.svg",
     "static/media/boots.svg": "/nft_generator/static/media/boots.6895042bfb4777baf2a27a2475041002.svg",
     "static/media/lock.svg": "/nft_generator/static/media/lock.fdecd34d06e90ccc7c580b0de3d12fe2.svg",
     "static/media/eye.svg": "/nft_generator/static/media/eye.b29ba7603115ad48212278c59a3ac39f.svg",
     "index.html": "/nft_generator/index.html",
     "static/media/choosen.svg": "/nft_generator/static/media/choosen.b32c949148a3ab36a15275baf360ce8b.svg",
     "static/media/pen.svg": "/nft_generator/static/media/pen.0f68d1b80cd6d0d987ea06115f08de6b.svg",
+    "static/media/plus.svg": "/nft_generator/static/media/plus.abfab955a0b0eae365729dff47080424.svg",
     "static/media/down.svg": "/nft_generator/static/media/down.e5ddfb05728981dc4b97126c3da070b5.svg",
     "static/media/up.svg": "/nft_generator/static/media/up.405a040216bc6259c8aff2d57c95124c.svg",
-    "main.68542002.css.map": "/nft_generator/static/css/main.68542002.css.map",
-    "main.dfcee76e.js.map": "/nft_generator/static/js/main.dfcee76e.js.map",
+    "main.a31ed88b.css.map": "/nft_generator/static/css/main.a31ed88b.css.map",
+    "main.5ceb6492.js.map": "/nft_generator/static/js/main.5ceb6492.js.map",
     "787.e8d26985.chunk.js.map": "/nft_generator/static/js/787.e8d26985.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.68542002.css",
-    "static/js/main.dfcee76e.js"
+    "static/css/main.a31ed88b.css",
+    "static/js/main.5ceb6492.js"
   ]
 }
