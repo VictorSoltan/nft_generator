@@ -78,7 +78,6 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
             downloadLink.click();
             document.body.removeChild(downloadLink);
             
-        if(!lockColor&&colors) setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length))    
         setNftNumb(zeroPad(Number(nftNumb) + 1))
     }
 
