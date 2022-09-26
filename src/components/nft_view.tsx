@@ -270,7 +270,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
     function setNewFolder(item: string){
         setFolderName(item)
-        setTraits([{folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }])
+        // setTraits([{folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }])
     }
 
     function styleButton(e: any){
