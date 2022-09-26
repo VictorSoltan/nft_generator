@@ -85,6 +85,8 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
     async function generate(){
         let newTrait = [...traits]
 
+        if(!lockColor&&colors) setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length)) 
+        
         for(let x=0; x<traits.length; x++){
             let traitName = random('random', x,  traits[x].folderName)
             if(traitName&&traits[x].folderName&&folderName){
@@ -172,7 +174,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         if(traits[0]?.svg) newFavorites.push({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
         
         setTraits(JSON.parse(JSON.stringify(favorites[indx].traits)))
-        console.log('traits ', favorites[indx].traits)
+        console.log('trait ', favorites[indx])
         setRandomStylePresset(favorites[indx].colorPreset)
 
         setFavorites(newFavorites)
@@ -184,8 +186,6 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                 if(colors){
                     try{
                         let obj = Object.entries(colors!)[favorites[x].colorPreset][1] as any
-                        console.log('sdfsdfsdfsdf ', obj)
-    
                         Object.entries(obj).map(item => {
                             if(document.querySelector(`#${item[0]}`)){
                                 let elem = document.querySelectorAll<any>(`#${item[0]}`)
@@ -270,7 +270,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
     function setNewFolder(item: string){
         setFolderName(item)
-        // setTraits([{folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }])
+        setTraits([{folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }])
     }
 
     function styleButton(e: any){

@@ -95,7 +95,6 @@
     align-items: flex-start;
     width: 50%;
     span{
-      margin-bottom: 10px;
       .points{
         flex-wrap: wrap;
         width: 140px;
@@ -139,13 +138,13 @@
       }
     }
     .plus_trait{
-      margin-top: 5px;
-      width: 110px;
+      margin-top: 6px;
+      width: 95px;
       justify-content: flex-end;
       img{
         transition: all 0.4s;
         cursor: pointer;
-        width: 60px;
+        width: 55px;
       }
     }
   }
@@ -227,27 +226,3 @@ div, span{
 }
 
 .show {display: block;}  
-  // #hair {fill: #705ad7;}
-  // #nose {fill: #2db3a9;}
-  // #nose-D {fill: #431f59;} 
-  // #nose-L {fill: #7cc4c5;}  
-  // #earskin {fill: #f1d0e6;}
-  // #texture {fill: #5a2ae7;}
-  // #blacks {fill: #523259;}
-  // #whites {fill: #ffffff;}
-  // #nails {fill: #431f59;}
-  // #skin {fill: #856dec;}
-  // #skin-D {fill: #705ad7;}
-  // #skin-L {fill: #9b7fff;}
-  // #skin2 {fill: #c8e7c2;}
-  // #skin2-D {fill: #a0d9c2;}
-  // #skin2-L {fill: #e8fbe2;}
-  // #bone {fill: #523259;}
-  // #bone-D {fill: #431f59;}
-  // #bone-L {fill: #643c64;}
-  // #eye {fill: #dfeee8;}
-  // #eye-D {fill: #b5c9c0;}
-  // #eye-L {fill: #f1f2f2;}
-  // #pupil {fill: #ab281b;}
-  // #pupil-D {fill: #6e0500;}
-  // #pupil-L {fill: #f2a358 ;}
