@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import Boots from '../assets/menu/boots.svg'
 import Lock from '../assets/menu/lock.svg'
@@ -13,9 +13,6 @@ import Plus from '../assets/menu/plus.svg'
 
 import axios from 'axios'
 
-import colors from '../assets/colors.json'
-import { unwatchFile } from 'fs'
-
 export default function Menu({backAddress, folderName, randomStylePresset, setRandomStylePresset, lockColor, setLockColor, colors, setColors, traits, setTraits, linkElems, setLinkElems} : 
     {backAddress: string; folderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean; setLockColor: any; colors: any; setColors: any; traits: Array<any>, setTraits: any; linkElems: Array<Object>, setLinkElems: any}) {
 
@@ -24,31 +21,25 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
         if(colors){
             let obj = Object.entries(colors)[randomStylePresset][1] as any
 
-        console.log( Object.entries(colors).length)
-            
-        // console.log(document.querySelector(`.svgOuter`)?.classList[1])
             Object.entries(obj).map(item => {
-                // console.log(item)
                 try{
                     if(document.querySelector(`#${item[0]}`)){
-                    let elem = document.querySelectorAll<any>(`#${item[0]}`)
-                    // console.log(elem[0].parentNode?.parentNode?.parentNode)
-                    // let className = elem[0].parentNode?.parentNode?.parentNode as any
-                    // console.log(className.classList[2])
-    
-                    for(let x=0; x<elem.length; x++){
-                        let className = elem[x].parentNode?.parentNode?.parentNode as any
-                        if(className.classList[1] === 'svgOuter' || className.parentNode?.classList[1] === 'svgOuter'){
-                            elem[x]!.style.fill = item[1]
-    
+                        let elem = document.querySelectorAll<any>(`#${item[0]}`)
+                        
+                        for(let x=0; x<elem.length; x++){
+                            let className = elem[x].parentNode?.parentNode?.parentNode as any
+                            if(className.classList[1] === 'svgOuter' || className.parentNode?.classList[1] === 'svgOuter'){
+                                elem[x]!.style.fill = item[1]
+                            
+                            }
                         }
-                    }
                     }
                 }catch(e){
                     console.log(e)
                 }                
             })
         }
+
         let leftEyes = document.querySelectorAll('#filler-eyes-l')
         for(let x = 0; x<leftEyes.length; x++){
             leftEyes[x].setAttributeNS(null, 'clip-path', 'url(#lpath_1_)');
@@ -75,7 +66,6 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
 
     let [folders, setFolders] = React.useState([]),
     pair = React.useRef<any>({avialiable: false})
-    console.log('pair ', pair.current)
 
     React.useEffect(() => {
         if(folderName!==''){

@@ -9,8 +9,6 @@ import Pen from '../assets/pen.svg'
 
 import axios from 'axios'
 
-import { Style } from 'react-style-tag';
-
 export default function NftView({backAddress, folderName, setFolderName, randomStylePresset, setRandomStylePresset, lockColor, colors, traits, setTraits, linkElems} : 
     {backAddress: string; folderName: string; setFolderName: any; randomStylePresset: number; setRandomStylePresset: any; lockColor: boolean, colors: any; traits: Array<any>; setTraits: any; linkElems: any;} ) {
 
@@ -144,9 +142,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
             }
             let arr = traits[indx].options
             let elem = arr[Math.floor(Math.random() * arr.length)]
-            console.log(elem)
             return elem
-            // setSelect(indx, elem, folderName)
         }
     }
 
@@ -158,12 +154,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
             }).then((res) => {
                 console.log('addToFavorites ', res.data)
                 setFavorites([res.data, ...favorites])
-
-            }).catch((err) => {
-                // console.log(err)
             })
-            console.log(randomStylePresset)
-            console.log(favorites.length)
         }
     }
 
@@ -273,7 +264,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
     }
 
     function styleButton(e: any){
-        e.target.style.transform = 'scale(0.9)'; e.target.style.opacity = '0.8'
+        e.target.style.transform = 'scale(0.95)'; e.target.style.opacity = '0.8'
     }
 
     function returnStyleButton(e: any){
@@ -298,8 +289,8 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                 <button onClick={() => {document.getElementById(`myDropdownFolders`)?.classList.toggle("show")}} className="dropbtn">{folderName === '' ? folders[0] : folderName}</button>
                 <div id="myDropdownFolders" className="dropdown-content">
                 {folders.map((item, index) => (
-                    <span>
-                        <div key={index} onClick={() => {document.getElementById(`myDropdownFolders`)?.classList.toggle("show"); setNewFolder(item)}}>{item}</div>
+                    <span key={index}>
+                        <div onClick={() => {document.getElementById(`myDropdownFolders`)?.classList.toggle("show"); setNewFolder(item)}}>{item}</div>
                         <button onClick={() => deleteFolder(item)}>&#10005;</button>
                     </span>
                 ))}

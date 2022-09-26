@@ -21,7 +21,6 @@ function App() {
   // backAddress = 'http://localhost:8000/';
 
   React.useEffect(() => {
-    console.log(linkElems)
     axios.get(`${backAddress}elemLinks`)
     .then((res) => {
       console.log(res.data)
