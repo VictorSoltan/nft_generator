@@ -170,9 +170,8 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
         let newFavorites = [...favorites]
         if(traits[0]?.svg) newFavorites.push({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
-        newFavorites = [...newFavorites.filter(el => el !== favorites[indx])]
         
-        setTraits(favorites[indx].traits)
+        setTraits(JSON.parse(JSON.stringify(favorites[indx].traits)))
         console.log('traits ', favorites[indx].traits)
         setRandomStylePresset(favorites[indx].colorPreset)
 
