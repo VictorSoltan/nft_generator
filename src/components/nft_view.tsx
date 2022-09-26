@@ -183,23 +183,29 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         if(favorites.length){
             for(let x = 0; x<favorites.length; x++){
                 if(colors){
-                    let obj = Object.entries(colors!)[favorites[x].colorPreset][1] as any
-
-                    Object.entries(obj).map(item => {
-                        if(document.querySelector(`#${item[0]}`)){
-                            let elem = document.querySelectorAll<any>(`#${item[0]}`)
-                            for(let q=0; q<elem.length; q++){
-                                let className = elem[q].parentNode?.parentNode?.parentNode as any
-                                if(String(className.classList[0]) === `svgOuter${x}` || className.parentNode.classList[0] === `svgOuter${x}` ){
-                                    elem[q]!.style.fill = item[1]
+                    try{
+                        let obj = Object.entries(colors!)[favorites[x].colorPreset][1] as any
+                        console.log('sdfsdfsdfsdf ', obj)
+    
+                        Object.entries(obj).map(item => {
+                            if(document.querySelector(`#${item[0]}`)){
+                                let elem = document.querySelectorAll<any>(`#${item[0]}`)
+                                for(let q=0; q<elem.length; q++){
+                                    let className = elem[q].parentNode?.parentNode?.parentNode as any
+                                    if(String(className.classList[0]) === `svgOuter${x}` || className.parentNode.classList[0] === `svgOuter${x}` ){
+                                        elem[q]!.style.fill = item[1]
+                                    }
                                 }
                             }
-                        }
-                    })
+                        })
+                    }catch(err){
+                        console.log(err)
+                    }
+
                 }
             }
         }
-    }, [favorites])
+    }, [favorites, colors])
 
     function removeElem(_id: string, index: number){
         let newArr = [...favorites]
