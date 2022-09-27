@@ -171,8 +171,8 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
     function swapNfts(indx: number){
 
-        let newFavorites = [...favorites]
-        if(traits[0]?.svg) newFavorites.push({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
+        // let newFavorites = [...favorites]
+        // if(traits[0]?.svg) newFavorites.push({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
 
         let newTrait = JSON.parse(JSON.stringify(favorites[indx].traits))
         setTraits(newTrait)
@@ -180,7 +180,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         setRandomStylePresset(favorites[indx].colorPreset)
         if(folders.includes(favorites[indx].mainFolder)) setFolderName(String(favorites[indx].mainFolder))
         
-        setFavorites(newFavorites)
+        // setFavorites(newFavorites)
     }
 
     React.useEffect(() => {
