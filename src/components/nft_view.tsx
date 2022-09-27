@@ -23,14 +23,14 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
             console.log(err)
         })
 
-    }, [])
+    }, [backAddress])
 
     let [favorites, setFavorites] = React.useState <Array<any>> ([]),
         [nftNumb, setNftNumb] = React.useState <any>('0001'),
         [nftName, setNftName] = React.useState <string>('nft'),
         [nftNameEdit, setNftNameEdit] = React.useState <boolean>(false),
         [nftSizeEdit, setNftSizeEdit] = React.useState <boolean>(false),
-        [folders, setFolders] = React.useState([]),
+        [folders, setFolders] = React.useState <Array<string>>([]),
         [nftSize, setNftSize] = React.useState({X: '800', Y: '800'})
 
     React.useEffect(() => {
@@ -42,7 +42,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         }).catch((err) => {
             console.log(err)
         })
-    }, [])        
+    }, [backAddress])        
     
     function zeroPad(num: number) {
         return num.toString().padStart(4, "0");
@@ -86,6 +86,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         
         for(let x=0; x<traits.length; x++){
             let traitName = random('random', x,  traits[x].folderName)
+            console.log('random', x,  traits[x].folderName, newTrait)
             if(traitName&&traits[x].folderName&&folderName){
                 await axios.post(`${backAddress}get_trait`, {
                     file: traitName,
@@ -100,6 +101,9 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                         newTrait[x].selectedOption = traitName
                         newTrait[x].svg = res.data
                     }
+                })
+                .catch((err) => {
+                    console.log(err)
                 })
             }
 
@@ -130,6 +134,10 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         setTraits(newTrait)
     }
 
+    React.useEffect(() => {
+        console.log('traits1 ', traits)
+    }, [traits])
+
     function random(name: string, indx: number,  folderName: string) {
         if(folderName !== ''){
             for(let x=0; x<linkElems.length; x++){
@@ -141,7 +149,9 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                 }
             }
             let arr = traits[indx].options
+            console.log('array123 ', traits)
             let elem = arr[Math.floor(Math.random() * arr.length)]
+            console.log('elem ', traits[indx].options, elem)
             return elem
         }
     }
@@ -149,6 +159,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
    async function addToFavorites(){
         if(traits.length){
             axios.post(`${backAddress}save_favorites`, {
+                mainFolder: folderName, 
                 traits: traits, 
                 colorPreset: randomStylePresset
             }).then((res) => {
@@ -162,11 +173,13 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
         let newFavorites = [...favorites]
         if(traits[0]?.svg) newFavorites.push({traits: JSON.parse(JSON.stringify(traits)), colorPreset: randomStylePresset})
-        
-        setTraits(JSON.parse(JSON.stringify(favorites[indx].traits)))
-        console.log('trait ', favorites[indx])
-        setRandomStylePresset(favorites[indx].colorPreset)
 
+        let newTrait = JSON.parse(JSON.stringify(favorites[indx].traits))
+        setTraits(newTrait)
+        console.log('trait ', newTrait)
+        setRandomStylePresset(favorites[indx].colorPreset)
+        if(folders.includes(favorites[indx].mainFolder)) setFolderName(String(favorites[indx].mainFolder))
+        
         setFavorites(newFavorites)
     }
 

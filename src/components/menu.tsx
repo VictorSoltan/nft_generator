@@ -19,10 +19,10 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
 
     React.useEffect(() => {
         if(colors){
-            let obj = Object.entries(colors)[randomStylePresset][1] as any
+            try{
+                let obj = Object.entries(colors)[randomStylePresset][1] as any
 
-            Object.entries(obj).map(item => {
-                try{
+                Object.entries(obj).map(item => {
                     if(document.querySelector(`#${item[0]}`)){
                         let elem = document.querySelectorAll<any>(`#${item[0]}`)
                         
@@ -34,10 +34,11 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                             }
                         }
                     }
-                }catch(e){
-                    console.log(e)
-                }                
-            })
+          
+                })
+            }catch(e){
+                console.log(e)
+            }      
         }
 
         let leftEyes = document.querySelectorAll('#filler-eyes-l')
@@ -74,13 +75,13 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
             })
             .then((res) => {
                 console.log(res.data)
-                let newArr = [...traits]
-                for(let x=0; x<newArr.length; x++){
-                    newArr[x].options = res.data
-                }
+                // let newArr = [...traits]
+                // for(let x=0; x<newArr.length; x++){
+                //     newArr[x].options = res.data
+                // }
                 console.log('res.data ', res.data)
                 setFolders(res.data)
-                setTraits(newArr)
+                // setTraits(newArr)
             })
         }
         if(folderName!==''){
@@ -91,9 +92,10 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                 console.log(res.data)
                 console.log('res.data ', res.data)
                 setColors(res.data)
+                setRandomStylePresset([res.data].length ? Math.floor(Math.random() * Object.entries(res.data).length) : 0)
             })
         }
-    }, [folderName])
+    }, [backAddress, folderName])
 
     const addFolder = () => {
         let newArr = [...traits]
@@ -197,7 +199,7 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
         if(selectedOption){
             let continuePairing = true
             for(let x=0; x<newArr.length; x++){
-                if(newArr[x].folderFirst === folderName && newArr[x].selectedFirst === selectedOption || newArr[x].folderSecond === folderName && newArr[x].selectSecond === selectedOption){
+                if((newArr[x].folderFirst === folderName && newArr[x].selectedFirst === selectedOption) || (newArr[x].folderSecond === folderName && newArr[x].selectSecond === selectedOption)){
                     newArr.splice(x, x+1); 
                     console.log(x)
                     continuePairing = false
@@ -235,7 +237,7 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
         let newArr: any = [...linkElems]
         let returnValue = false
         for(let x=0; x<newArr.length; x++){
-            if(newArr[x].folderFirst === folderName && newArr[x].selectedFirst === selectedOption || newArr[x].folderSecond === folderName && newArr[x].selectSecond === selectedOption){
+            if((newArr[x].folderFirst === folderName && newArr[x].selectedFirst === selectedOption) || (newArr[x].folderSecond === folderName && newArr[x].selectSecond === selectedOption)){
                 returnValue = true
             }
         }
@@ -284,7 +286,7 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                 </div>
                 <div className='direction'>
                     <div className="dropdown">
-                        <button onClick={() => myFunction(9999)} className="dropbtn">{colors ? Object.entries(colors)[randomStylePresset][0] : ''}</button>
+                        <button onClick={() => myFunction(9999)} className="dropbtn">{colors&&Object.entries(colors)[randomStylePresset] ? Object.entries(colors)[randomStylePresset][0]  : ''}</button>
                         <div id="myDropdown9999" className="dropdown-content">
                         {colors && Object.entries(colors).map((item, index) => (
                             <span key={index} onClick={() => {setRandomStylePresset(index); myFunction(9999)}}>
@@ -308,7 +310,7 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                             key={indx} onClick={() => item.func && item.func(item.name, index, el.folderName, el.selectedOption)}>
                                {
                                 item.img === Boots ? <img src={item.img} style={checkValue(el.folderName, el.selectedOption) ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
-                                : <img src={item.img} style={item.img === Lock&&el.locked || item.img === Eye&&el.visible ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
+                                : <img src={item.img} style={(item.img === Lock&&el.locked) || (item.img === Eye&&el.visible) ? {filter: 'brightness(170%)'} : {filter: 'none'}} alt={item.name} />
                                }
                             </button>    
                         ))}
@@ -324,7 +326,7 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                         <div className="dropdown">
                             <button onClick={() => myFunction(index)} className="dropbtn">{el.selectedOption ? el.selectedOption : 'Choose a trait'}</button>
                             <div id={"myDropdown"+index} className="dropdown-content">
-                                {el.options && el.options.map((elem: any, indx: number) => (
+                                {(el.options.length ? el.options : folders).map((elem: any, indx: number) => (
                                     <span key={indx} onClick={() => setSelect(index, elem, el.folderName)}>
                                         {elem}
                                     </span>

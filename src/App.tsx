@@ -13,7 +13,7 @@ function App() {
     {folderName: '', options: [], selectedOption: '', svg: null, visible: true, locked: false }
   ]),
   [colors, setColors] = React.useState(null),
-  [randomStylePresset, setRandomStylePresset] = React.useState(Math.floor(Math.random() * Object.entries(colors ? colors : {}).length)),
+  [randomStylePresset, setRandomStylePresset] = React.useState(0),
   [linkElems, setLinkElems] = React.useState <any> ([]),
   [lockColor, setLockColor] = React.useState <boolean> (false),
   // backAddress = 'https://limitless-island-76560.herokuapp.com/';
@@ -28,7 +28,7 @@ function App() {
     }).catch((err) => {
         console.log(err)
     })
-  }, [])
+  }, [backAddress])
 
   window.onclick = function(e: any){
     let allDropdrown = document.querySelectorAll('.show')
