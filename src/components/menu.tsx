@@ -149,7 +149,8 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                 setTraits(newArr)
             })
             .catch((err) => {
-                alert('there is no such trait in this collection')
+                if(e&&traits[index].folderName) alert(`No such trait as ${e}, in ${traits[index].folderName}`)
+                return
             })
         }
     }

@@ -23,7 +23,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
             console.log(err)
         })
 
-    }, [backAddress])
+    }, [backAddress, setFolderName])
 
     let [favorites, setFavorites] = React.useState <Array<any>> ([]),
         [nftNumb, setNftNumb] = React.useState <any>('0001'),
@@ -33,12 +33,34 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         [folders, setFolders] = React.useState <Array<string>>([]),
         [nftSize, setNftSize] = React.useState({X: '800', Y: '800'})
 
+    const ReqTraits = async (data: any) => {
+        for(let x=0; x<data.length; x++){
+            for(let q=0; q<data[x].traits.length; q++){
+                await axios.post(`${backAddress}get_trait`, {
+                    file: data[x].traits[q].selectedOption,
+                    trait: data[x].traits[q].folderName,
+                    folder: data[x].mainFolder
+                })
+                .then((response) => {
+                    if(data[x].traits[q]) {
+                        data[x].traits[q].svg = response.data
+                    }
+                })
+                .catch((err) =>{
+                    console.log(err)
+                })
+            }
+        }         
+        return data
+    }    
+
     React.useEffect(() => {
-        console.log(linkElems)
+        console.log('312', linkElems)
         axios.get(`${backAddress}favorites`)
-        .then((res) => {
-            console.log('favorites ', res.data)
-            setFavorites([...res.data].reverse())
+        .then(async (res) => {
+            console.log('favorites ', ReqTraits(res.data))
+            let result = await ReqTraits(res.data)
+            setFavorites(result.reverse())
         }).catch((err) => {
             console.log(err)
         })
@@ -103,6 +125,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
                     }
                 })
                 .catch((err) => {
+                    if(traitName&&traits[x].folderName) alert(`No such trait as ${traitName}, in ${traits[x].folderName}`)
                     console.log(err)
                 })
             }
@@ -134,10 +157,6 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         setTraits(newTrait)
     }
 
-    React.useEffect(() => {
-        console.log('traits1 ', traits)
-    }, [traits])
-
     function random(name: string, indx: number,  folderName: string) {
         if(folderName !== ''){
             for(let x=0; x<linkElems.length; x++){
@@ -158,12 +177,23 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
    async function addToFavorites(){
         if(traits.length){
+            let favoriteSvg = [] as any
+            // console.log(folderName)
+            traits.forEach(el => {
+                el.svg = undefined
+                favoriteSvg.push(el)
+
+                // let {svg, ...y} = el;
+                // favoriteSvg.push(y)
+            })
+            console.log(traits)
+            console.log('favoriteSvg', favoriteSvg)
             axios.post(`${backAddress}save_favorites`, {
                 mainFolder: folderName, 
-                traits: traits, 
+                traits: favoriteSvg, 
                 colorPreset: randomStylePresset
-            }).then((res) => {
-                console.log('addToFavorites ', res.data)
+            }).then( async (res) => {
+                await ReqTraits([res.data])
                 setFavorites([res.data, ...favorites])
             })
         }
@@ -249,7 +279,7 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         } catch(err) {
           console.log(err)
         }
-      }
+    }
 
     const handleFileSelect = (event: any) => {
         selectedFile.current = event.target.files[0]
