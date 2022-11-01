@@ -34,31 +34,31 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
         [nftSize, setNftSize] = React.useState({X: '800', Y: '800'})
 
     const ReqTraits = async (data: any) => {
+        let startTime = performance.now()
         for(let x=0; x<data.length; x++){
-            for(let q=0; q<data[x].traits.length; q++){
+            await Promise.all(data[x].traits.map(async (el: any) => {
                 await axios.post(`${backAddress}get_trait`, {
-                    file: data[x].traits[q].selectedOption,
-                    trait: data[x].traits[q].folderName,
+                    file: el.selectedOption,
+                    trait: el.folderName,
                     folder: data[x].mainFolder
                 })
                 .then((response) => {
-                    if(data[x].traits[q]) {
-                        data[x].traits[q].svg = response.data
-                    }
+                    if(el) {el.svg = response.data}
                 })
                 .catch((err) =>{
                     console.log(err)
                 })
-            }
+            }))
         }         
+        let endTime = performance.now()
+        console.log(`Call to doSomething took ${endTime - startTime} milliseconds`)
         return data
+        
     }    
 
     React.useEffect(() => {
-        console.log('312', linkElems)
         axios.get(`${backAddress}favorites`)
         .then(async (res) => {
-            console.log('favorites ', ReqTraits(res.data))
             let result = await ReqTraits(res.data)
             setFavorites(result.reverse())
         }).catch((err) => {
@@ -106,54 +106,49 @@ export default function NftView({backAddress, folderName, setFolderName, randomS
 
         if(!lockColor&&colors) setRandomStylePresset(Math.floor(Math.random() * Object.entries(colors).length)) 
         
-        for(let x=0; x<traits.length; x++){
-            let traitName = random('random', x,  traits[x].folderName)
-            console.log('random', x,  traits[x].folderName, newTrait)
-            if(traitName&&traits[x].folderName&&folderName){
+        await Promise.all(traits.map(async (item: any, index) => {
+            let traitName = random('random', index,  item.folderName)
+            console.log('random', index,  item.folderName, newTrait)
+            if(traitName&&item.folderName&&folderName){
                 await axios.post(`${backAddress}get_trait`, {
                     file: traitName,
-                    trait: traits[x].folderName,
+                    trait: item.folderName,
                     folder: folderName
                 })
                 .then((res) => {
-                    console.log(res.data)
-                    console.log(traitName)
-                    
-                    if(!traits[x].locked) {
-                        newTrait[x].selectedOption = traitName
-                        newTrait[x].svg = res.data
+                    if(!item.locked) {
+                        console.log('get_trait')
+                        newTrait[index].selectedOption = traitName
+                        newTrait[index].svg = res.data
                     }
                 })
                 .catch((err) => {
-                    if(traitName&&traits[x].folderName) alert(`No such trait as ${traitName}, in ${traits[x].folderName}`)
+                    if(traitName&&item.folderName) alert(`No such trait as ${traitName}, in ${item.folderName}`)
                     console.log(err)
                 })
-            }
-
-        }
-        // console.log(newSvgs)
-        for(let x=0; x<linkElems.length; x++){
-            for(let q=0; q<traits.length; q++){
-                if(linkElems[x].folderSecond===traits[q].folderName && linkElems[x].selectSecond===traits[q].selectedOption){
+            }            
+        }))
+            
+        await Promise.all(linkElems.map(async (item: any) => {
+            Promise.all(traits.map(async (el: any) => {
+                if(item.folderSecond===el.folderName && item.selectSecond===el.selectedOption){
                     console.log('second')
                     await axios.post(`${backAddress}get_trait`, {
-                        file: linkElems[x].selectedFirst,
-                        trait: linkElems[x].folderFirst,
+                        file: item.selectedFirst,
+                        trait: item.folderFirst,
                         folder: folderName
                     })
                     .then((res) => {
-                        console.log(res.data)
-                        let index = traits.findIndex(el => el.folderName === linkElems[x].folderFirst);
-                        console.log(index)
-                        newTrait[index].selectedOption = linkElems[x].selectedFirst
+                        let index = traits.findIndex(el => el.folderName === item.folderFirst);
+                        newTrait[index].selectedOption = item.selectedFirst
                         newTrait[index].svg = res.data
                     })
                     .catch((err) =>{
                         console.log(err)
                     })
                 }
-            }
-        }        
+            }))
+        }))
         setTraits(newTrait)
     }
 
