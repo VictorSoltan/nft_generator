@@ -16,7 +16,6 @@ function App() {
   [randomStylePresset, setRandomStylePresset] = React.useState(0),
   [linkElems, setLinkElems] = React.useState <any> ([]),
   [lockColor, setLockColor] = React.useState <boolean> (false),
-  // backAddress = 'https://limitless-island-76560.herokuapp.com/';
   backAddress = 'https://nft-generator.onrender.com/';
   // backAddress = 'http://localhost:8000/';
 

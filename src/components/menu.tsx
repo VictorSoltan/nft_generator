@@ -325,7 +325,7 @@ export default function Menu({backAddress, folderName, randomStylePresset, setRa
                             <button onClick={() => removeElem(index)}>&#10005;</button>
                         </header>
                         <div className="dropdown">
-                            <button onClick={() => myFunction(index)} className="dropbtn">{el.selectedOption ? el.selectedOption : 'Choose a trait'}</button>
+                            <button onClick={() => myFunction(index)} style={{ color: el.visible ? '' : 'red' }} className="dropbtn">{el.selectedOption ? el.selectedOption : 'Choose a trait'}</button>
                             <div id={"myDropdown"+index} className="dropdown-content">
                                 {(el.options.length ? el.options : folders).map((elem: any, indx: number) => (
                                     <span key={indx} onClick={() => setSelect(index, elem, el.folderName)}>
